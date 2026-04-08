@@ -1,0 +1,3493 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CS Empreendimentos · CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cs-gold: #C9A84C;
+    --cs-gold-light: #E8D5A3;
+    --cs-gold-dark: #9A7830;
+    --cs-navy: #0F1F3D;
+    --cs-navy-mid: #1A2F52;
+    --cs-navy-light: #243B66;
+    --cs-slate: #2C3E5C;
+    --cs-bg: #F4F5F7;
+    --cs-surface: #FFFFFF;
+    --cs-surface2: #F9F9FB;
+    --cs-border: rgba(15,31,61,0.10);
+    --cs-border-mid: rgba(15,31,61,0.18);
+    --cs-text: #0F1F3D;
+    --cs-text-mid: #445575;
+    --cs-text-soft: #7A8FAD;
+    --cs-green: #1A7F5A;
+    --cs-green-bg: #EAF7F2;
+    --cs-red: #C0392B;
+    --cs-red-bg: #FDEEEC;
+    --cs-amber: #B7770D;
+    --cs-amber-bg: #FEF6E4;
+    --cs-blue: #1A5CB7;
+    --cs-blue-bg: #EBF2FC;
+    --cs-purple: #6B35C2;
+    --cs-purple-bg: #F0EAFD;
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+    --radius-xl: 22px;
+    --shadow-sm: 0 1px 4px rgba(15,31,61,0.07);
+    --shadow-md: 0 4px 18px rgba(15,31,61,0.10);
+    --shadow-lg: 0 12px 40px rgba(15,31,61,0.15);
+    --sidebar-w: 240px;
+    --topbar-h: 64px;
+    --transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 14px; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cs-bg);
+    color: var(--cs-text);
+    line-height: 1.5;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  h1,h2,h3,h4,h5 { font-family: 'Sora', sans-serif; }
+  button { font-family: 'DM Sans', sans-serif; cursor: pointer; border: none; outline: none; }
+  input, select, textarea { font-family: 'DM Sans', sans-serif; outline: none; }
+  a { text-decoration: none; color: inherit; }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(15,31,61,0.15); border-radius: 10px; }
+
+  /* ─── LAYOUT ─── */
+  #app { display: flex; min-height: 100vh; }
+
+  /* ─── SIDEBAR ─── */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: var(--cs-navy);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    z-index: 100;
+    transition: var(--transition);
+  }
+  .sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 20px 20px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .logo-mark {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--cs-gold), var(--cs-gold-dark));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: white;
+    letter-spacing: -0.5px;
+    flex-shrink: 0;
+  }
+  .logo-text { line-height: 1.2; }
+  .logo-text span:first-child {
+    display: block;
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: white;
+    letter-spacing: 0.3px;
+  }
+  .logo-text span:last-child {
+    display: block;
+    font-size: 10px;
+    color: rgba(255,255,255,0.4);
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+  .sidebar-section-label {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.25);
+    font-weight: 600;
+    padding: 16px 20px 6px;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    color: rgba(255,255,255,0.55);
+    font-size: 13px;
+    font-weight: 400;
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+    border-radius: 0;
+    margin: 1px 8px;
+    border-radius: var(--radius-sm);
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.85); }
+  .nav-item.active {
+    background: rgba(201,168,76,0.15);
+    color: var(--cs-gold-light);
+    font-weight: 500;
+  }
+  .nav-item.active::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 6px; bottom: 6px;
+    width: 3px;
+    background: var(--cs-gold);
+    border-radius: 0 3px 3px 0;
+    margin-left: -8px;
+  }
+  .nav-icon {
+    width: 16px; height: 16px;
+    flex-shrink: 0;
+    opacity: 0.7;
+  }
+  .nav-item.active .nav-icon { opacity: 1; }
+  .nav-badge {
+    margin-left: auto;
+    background: var(--cs-gold);
+    color: var(--cs-navy);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 20px;
+    line-height: 1.4;
+  }
+  .sidebar-bottom {
+    margin-top: auto;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding: 12px 8px;
+  }
+  .user-card {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+  }
+  .user-card:hover { background: rgba(255,255,255,0.07); }
+  .avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--cs-gold);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: var(--cs-navy);
+    flex-shrink: 0;
+  }
+  .avatar.lg { width: 40px; height: 40px; font-size: 15px; }
+  .avatar.xl { width: 52px; height: 52px; font-size: 18px; }
+  .user-info span:first-child {
+    display: block; font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.85);
+  }
+  .user-info span:last-child {
+    display: block; font-size: 10px; color: rgba(255,255,255,0.35); margin-top: 1px;
+  }
+  .user-menu-icon { margin-left: auto; color: rgba(255,255,255,0.3); }
+
+  /* ─── MAIN ─── */
+  .main {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  /* ─── TOPBAR ─── */
+  .topbar {
+    height: var(--topbar-h);
+    background: var(--cs-surface);
+    border-bottom: 1px solid var(--cs-border);
+    display: flex;
+    align-items: center;
+    padding: 0 28px;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .topbar-title { font-family: 'Sora', sans-serif; font-size: 16px; font-weight: 600; color: var(--cs-text); }
+  .topbar-sub { font-size: 12px; color: var(--cs-text-soft); margin-top: 1px; }
+  .topbar-actions { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+  .search-box {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--cs-bg);
+    border: 1px solid var(--cs-border);
+    border-radius: var(--radius-md);
+    padding: 8px 14px;
+    width: 220px;
+    transition: var(--transition);
+  }
+  .search-box:focus-within { border-color: var(--cs-gold); background: white; }
+  .search-box input { background: transparent; border: none; font-size: 13px; color: var(--cs-text); width: 100%; }
+  .search-box input::placeholder { color: var(--cs-text-soft); }
+  .icon-btn {
+    width: 38px; height: 38px;
+    border-radius: var(--radius-md);
+    background: var(--cs-bg);
+    border: 1px solid var(--cs-border);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+    color: var(--cs-text-mid);
+    position: relative;
+  }
+  .icon-btn:hover { background: white; border-color: var(--cs-border-mid); color: var(--cs-text); }
+  .notif-dot {
+    position: absolute; top: 6px; right: 6px;
+    width: 8px; height: 8px;
+    background: var(--cs-red);
+    border-radius: 50%;
+    border: 2px solid white;
+  }
+
+  /* ─── BUTTONS ─── */
+  .btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 9px 18px;
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    font-weight: 500;
+    transition: var(--transition);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .btn-primary {
+    background: var(--cs-navy);
+    color: white;
+  }
+  .btn-primary:hover { background: var(--cs-navy-mid); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+  .btn-gold {
+    background: linear-gradient(135deg, var(--cs-gold), var(--cs-gold-dark));
+    color: white;
+    font-weight: 600;
+  }
+  .btn-gold:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(201,168,76,0.4); }
+  .btn-outline {
+    background: transparent;
+    border: 1px solid var(--cs-border-mid);
+    color: var(--cs-text-mid);
+  }
+  .btn-outline:hover { background: var(--cs-bg); border-color: var(--cs-navy); color: var(--cs-text); }
+  .btn-ghost { background: transparent; color: var(--cs-text-mid); }
+  .btn-ghost:hover { background: var(--cs-bg); }
+  .btn-sm { padding: 6px 14px; font-size: 12px; }
+  .btn-icon { padding: 9px; }
+
+  /* ─── PAGE CONTENT ─── */
+  .page { padding: 28px; display: none; animation: fadeIn 0.25s ease; }
+  .page.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ─── CARDS ─── */
+  .card {
+    background: var(--cs-surface);
+    border: 1px solid var(--cs-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+  }
+  .card-header {
+    padding: 18px 22px 0;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .card-title { font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 600; color: var(--cs-text); }
+  .card-body { padding: 16px 22px 20px; }
+
+  /* ─── STATS GRID ─── */
+  .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 24px; }
+  .stat-card {
+    background: var(--cs-surface);
+    border: 1px solid var(--cs-border);
+    border-radius: var(--radius-lg);
+    padding: 20px 22px;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+  .stat-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--accent, var(--cs-gold));
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  }
+  .stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--cs-text-soft); font-weight: 600; margin-bottom: 8px; }
+  .stat-value { font-family: 'Sora', sans-serif; font-size: 28px; font-weight: 700; color: var(--cs-text); line-height: 1; }
+  .stat-sub { font-size: 12px; color: var(--cs-text-soft); margin-top: 6px; }
+  .stat-trend {
+    display: inline-flex; align-items: center; gap: 3px;
+    font-size: 11px; font-weight: 600;
+    padding: 3px 8px; border-radius: 20px; margin-top: 8px;
+  }
+  .stat-trend.up { background: var(--cs-green-bg); color: var(--cs-green); }
+  .stat-trend.down { background: var(--cs-red-bg); color: var(--cs-red); }
+
+  /* ─── SECTION ROW ─── */
+  .section-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
+  .section-row.three { grid-template-columns: 2fr 1fr 1fr; }
+
+  /* ─── TABLE ─── */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--cs-text-soft);
+    padding: 0 16px 12px;
+    border-bottom: 1px solid var(--cs-border);
+    white-space: nowrap;
+  }
+  tbody tr {
+    border-bottom: 1px solid rgba(15,31,61,0.05);
+    transition: var(--transition);
+  }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--cs-surface2); }
+  tbody td { padding: 13px 16px; font-size: 13px; color: var(--cs-text-mid); vertical-align: middle; }
+  tbody td:first-child { color: var(--cs-text); font-weight: 500; }
+
+  /* ─── BADGES ─── */
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 10px; border-radius: 20px;
+    font-size: 11px; font-weight: 600;
+    white-space: nowrap;
+  }
+  .badge-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .badge-novo { background: var(--cs-blue-bg); color: var(--cs-blue); }
+  .badge-atendimento { background: var(--cs-amber-bg); color: var(--cs-amber); }
+  .badge-qualificado { background: var(--cs-purple-bg); color: var(--cs-purple); }
+  .badge-visita { background: #EBF5FB; color: #1A7CA8; }
+  .badge-proposta { background: var(--cs-green-bg); color: var(--cs-green); }
+  .badge-negociacao { background: #FDF3E7; color: #B35F0A; }
+  .badge-fechado { background: var(--cs-green-bg); color: var(--cs-green); }
+  .badge-perdido { background: var(--cs-red-bg); color: var(--cs-red); }
+  .badge-aguardando { background: #F0F0F0; color: #666; }
+  .badge-quente { background: #FDECEA; color: #C0392B; }
+  .badge-morno { background: #FEF6E4; color: #B7770D; }
+  .badge-frio { background: #EBF2FC; color: #1A5CB7; }
+
+  /* ─── PRIORITY ─── */
+  .priority { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .priority-alta { background: #E74C3C; }
+  .priority-media { background: #F39C12; }
+  .priority-baixa { background: #27AE60; }
+
+  /* ─── KANBAN ─── */
+  .kanban-wrap { overflow-x: auto; padding-bottom: 16px; }
+  .kanban-board { display: flex; gap: 14px; min-width: max-content; }
+  .kanban-col {
+    width: 230px; flex-shrink: 0;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .kanban-col-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px;
+    background: var(--cs-surface);
+    border: 1px solid var(--cs-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+  }
+  .kanban-col-title {
+    font-family: 'Sora', sans-serif;
+    font-size: 12px; font-weight: 600;
+    color: var(--cs-text);
+  }
+  .kanban-count {
+    background: var(--cs-bg);
+    border: 1px solid var(--cs-border);
+    border-radius: 20px;
+    padding: 1px 8px;
+    font-size: 11px; font-weight: 600;
+    color: var(--cs-text-soft);
+  }
+  .kanban-col-body {
+    display: flex; flex-direction: column; gap: 8px;
+    min-height: 200px;
+    padding: 2px;
+  }
+  .lead-card {
+    background: var(--cs-surface);
+    border: 1px solid var(--cs-border);
+    border-radius: var(--radius-md);
+    padding: 14px;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: var(--shadow-sm);
+    position: relative;
+  }
+  .lead-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); border-color: var(--cs-border-mid); }
+  .lead-card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px; }
+  .lead-name { font-weight: 600; font-size: 13px; color: var(--cs-text); line-height: 1.3; }
+  .lead-phone { font-size: 11px; color: var(--cs-text-soft); margin-top: 2px; }
+  .lead-card-meta { display: flex; flex-direction: column; gap: 5px; margin-top: 10px; }
+  .lead-meta-row { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--cs-text-soft); }
+  .lead-card-actions { display: flex; align-items: center; gap: 6px; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--cs-border); }
+  .wpp-btn {
+    display: flex; align-items: center; gap: 5px;
+    background: #25D366;
+    color: white;
+    border-radius: var(--radius-sm);
+    padding: 5px 10px;
+    font-size: 11px; font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  .wpp-btn:hover { background: #1EB858; }
+  .card-open-btn {
+    margin-left: auto;
+    display: flex; align-items: center; gap: 4px;
+    background: var(--cs-bg);
+    border: 1px solid var(--cs-border);
+    border-radius: var(--radius-sm);
+    padding: 5px 10px;
+    font-size: 11px; font-weight: 500;
+    color: var(--cs-text-mid);
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  .card-open-btn:hover { background: var(--cs-navy); color: white; border-color: var(--cs-navy); }
+
+  /* ─── FILTERS ─── */
+  .filter-bar {
+    display: flex; align-items: center; gap: 10px;
+    padding: 16px 22px;
+    border-bottom: 1px solid var(--cs-border);
+    flex-wrap: wrap;
+  }
+  .filter-select {
+    background: var(--cs-bg);
+    border: 1px solid var(--cs-border);
+    border-radius: var(--radius-md);
+    padding: 8px 14px;
+    font-size: 13px;
+    color: var(--cs-text-mid);
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6' stroke='%237A8FAD' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 30px;
+    transition: var(--transition);
+  }
+  .filter-select:focus { border-color: var(--cs-gold); background-color: white; }
+  .filter-tag {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--cs-navy-light);
+    color: white;
+    border-radius: 20px;
+    padding: 5px 12px;
+    font-size: 12px; font-weight: 500;
+    cursor: pointer;
+  }
+  .filter-tag .remove { opacity: 0.6; }
+  .filter-tag .remove:hover { opacity: 1; }
+
+  /* ─── LEAD DETAIL ─── */
+  .lead-detail-header {
+    background: linear-gradient(135deg, var(--cs-navy) 0%, var(--cs-navy-mid) 100%);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    color: white;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .lead-detail-header::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 200px; height: 200px;
+    background: rgba(201,168,76,0.08);
+    border-radius: 50%;
+  }
+  .lead-detail-header::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; right: 60px;
+    width: 150px; height: 150px;
+    background: rgba(201,168,76,0.05);
+    border-radius: 50%;
+  }
+
+  /* ─── TIMELINE ─── */
+  .timeline { display: flex; flex-direction: column; gap: 0; }
+  .timeline-item { display: flex; gap: 14px; padding: 12px 0; position: relative; }
+  .timeline-item:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 15px; top: 44px; bottom: 0;
+    width: 1px;
+    background: var(--cs-border);
+  }
+  .timeline-dot {
+    width: 30px; height: 30px; flex-shrink: 0;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+  }
+  .timeline-content { flex: 1; }
+  .timeline-title { font-size: 13px; font-weight: 600; color: var(--cs-text); }
+  .timeline-meta { font-size: 11px; color: var(--cs-text-soft); margin-top: 2px; }
+  .timeline-note { font-size: 12px; color: var(--cs-text-mid); margin-top: 6px; background: var(--cs-surface2); border-radius: var(--radius-sm); padding: 8px 12px; border-left: 3px solid var(--cs-gold); }
+
+  /* ─── FUNIL CHART ─── */
+  .funnel-bar { display: flex; flex-direction: column; gap: 6px; }
+  .funnel-step { display: flex; align-items: center; gap: 12px; }
+  .funnel-label { font-size: 12px; color: var(--cs-text-mid); width: 120px; text-align: right; flex-shrink: 0; }
+  .funnel-bar-wrap { flex: 1; background: var(--cs-bg); border-radius: 20px; height: 24px; overflow: hidden; position: relative; }
+  .funnel-bar-fill { height: 100%; border-radius: 20px; display: flex; align-items: center; padding-left: 10px; transition: width 0.8s cubic-bezier(0.4,0,0.2,1); }
+  .funnel-bar-fill span { font-size: 11px; font-weight: 700; color: white; white-space: nowrap; }
+  .funnel-num { font-size: 12px; font-weight: 600; color: var(--cs-text); width: 30px; }
+
+  /* ─── AGENDA ─── */
+  .agenda-day { display: flex; gap: 14px; padding: 16px 0; border-bottom: 1px solid var(--cs-border); }
+  .agenda-day:last-child { border-bottom: none; }
+  .agenda-date-col { width: 50px; flex-shrink: 0; text-align: center; }
+  .agenda-day-num { font-family: 'Sora', sans-serif; font-size: 24px; font-weight: 700; color: var(--cs-text); line-height: 1; }
+  .agenda-day-name { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--cs-text-soft); margin-top: 2px; }
+  .agenda-events { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+  .agenda-event {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--cs-surface2);
+    border: 1px solid var(--cs-border);
+    border-radius: var(--radius-md);
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: var(--transition);
+    border-left: 3px solid var(--event-color, var(--cs-gold));
+  }
+  .agenda-event:hover { background: white; box-shadow: var(--shadow-sm); }
+  .event-time { font-size: 12px; font-weight: 600; color: var(--cs-text); width: 46px; flex-shrink: 0; }
+  .event-title { font-size: 13px; font-weight: 600; color: var(--cs-text); }
+  .event-sub { font-size: 11px; color: var(--cs-text-soft); margin-top: 2px; }
+  .event-lead-badge {
+    margin-left: auto;
+    background: var(--cs-bg);
+    border-radius: var(--radius-sm);
+    padding: 4px 10px;
+    font-size: 11px; color: var(--cs-text-mid); font-weight: 500;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* ─── FORM ─── */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group.span2 { grid-column: span 2; }
+  .form-group.full { grid-column: 1 / -1; }
+  .form-label { font-size: 12px; font-weight: 600; color: var(--cs-text-mid); letter-spacing: 0.3px; }
+  .form-input, .form-select, .form-textarea {
+    background: var(--cs-bg);
+    border: 1px solid var(--cs-border);
+    border-radius: var(--radius-md);
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--cs-text);
+    transition: var(--transition);
+    width: 100%;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    border-color: var(--cs-gold);
+    background: white;
+    box-shadow: 0 0 0 3px rgba(201,168,76,0.12);
+  }
+  .form-textarea { resize: vertical; min-height: 80px; }
+  .form-section-title {
+    font-family: 'Sora', sans-serif;
+    font-size: 13px; font-weight: 600;
+    color: var(--cs-text);
+    margin-bottom: 4px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--cs-border);
+    grid-column: 1 / -1;
+  }
+
+  /* ─── MODAL ─── */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(10,20,40,0.5);
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+  .modal-overlay.open { display: flex; animation: fadeIn 0.2s ease; }
+  .modal {
+    background: var(--cs-surface);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    width: 720px;
+    max-width: 95vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideUp 0.25s ease;
+  }
+  @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .modal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 26px;
+    border-bottom: 1px solid var(--cs-border);
+    position: sticky; top: 0; background: var(--cs-surface); z-index: 10;
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  }
+  .modal-title { font-family: 'Sora', sans-serif; font-size: 16px; font-weight: 700; color: var(--cs-text); }
+  .modal-body { padding: 24px 26px; }
+  .modal-footer { padding: 16px 26px; border-top: 1px solid var(--cs-border); display: flex; justify-content: flex-end; gap: 10px; }
+  .close-btn {
+    width: 34px; height: 34px;
+    background: var(--cs-bg);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    font-size: 18px; color: var(--cs-text-soft);
+    transition: var(--transition);
+    border: none;
+  }
+  .close-btn:hover { background: var(--cs-red-bg); color: var(--cs-red); }
+
+  /* ─── TABS ─── */
+  .tab-bar { display: flex; gap: 4px; border-bottom: 1px solid var(--cs-border); padding: 0 22px; }
+  .tab {
+    padding: 12px 16px;
+    font-size: 13px; font-weight: 500;
+    color: var(--cs-text-soft);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: var(--transition);
+    white-space: nowrap;
+  }
+  .tab:hover { color: var(--cs-text); }
+  .tab.active { color: var(--cs-navy); border-bottom-color: var(--cs-gold); font-weight: 600; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; animation: fadeIn 0.2s ease; }
+
+  /* ─── EMPTY STATE ─── */
+  .empty-state { text-align: center; padding: 48px 24px; color: var(--cs-text-soft); }
+  .empty-icon { font-size: 40px; margin-bottom: 12px; opacity: 0.4; }
+  .empty-title { font-size: 15px; font-weight: 600; color: var(--cs-text-mid); margin-bottom: 6px; }
+  .empty-sub { font-size: 13px; }
+
+  /* ─── EMPREENDIMENTO CARD ─── */
+  .emp-card {
+    background: var(--cs-surface);
+    border: 1px solid var(--cs-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: var(--transition);
+    box-shadow: var(--shadow-sm);
+  }
+  .emp-card:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
+  .emp-cover {
+    height: 130px;
+    position: relative;
+    display: flex; align-items: flex-end;
+    padding: 14px;
+  }
+  .emp-cover-aurora { background: linear-gradient(135deg, #1a3a2a, #2d6a4f); }
+  .emp-cover-florata { background: linear-gradient(135deg, #2c1a4a, #4a2d7a); }
+  .emp-cover-house { background: linear-gradient(135deg, #1a2a4a, #2d4a7a); }
+  .emp-logo-badge {
+    background: rgba(201,168,76,0.9);
+    color: white;
+    font-family: 'Sora', sans-serif;
+    font-size: 10px; font-weight: 700;
+    padding: 4px 10px; border-radius: 20px;
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+  .emp-card-body { padding: 16px 18px; }
+  .emp-name { font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 700; color: var(--cs-text); margin-bottom: 4px; }
+  .emp-type { font-size: 11px; color: var(--cs-text-soft); text-transform: uppercase; letter-spacing: 1px; }
+  .emp-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--cs-border); }
+  .emp-stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--cs-text-soft); }
+  .emp-stat-val { font-size: 18px; font-weight: 700; color: var(--cs-text); font-family: 'Sora', sans-serif; }
+
+  /* ─── PROGRESS ─── */
+  .progress-bar-wrap { background: var(--cs-bg); border-radius: 20px; height: 6px; overflow: hidden; margin-top: 4px; }
+  .progress-bar-fill { height: 100%; border-radius: 20px; background: linear-gradient(90deg, var(--cs-gold-dark), var(--cs-gold)); }
+
+  /* ─── LOGIN ─── */
+  #login-page {
+    position: fixed; inset: 0;
+    background: var(--cs-navy);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+  }
+  .login-card {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: 48px 44px;
+    width: 420px;
+    box-shadow: var(--shadow-lg);
+  }
+  .login-logo { display: flex; align-items: center; gap: 12px; margin-bottom: 32px; }
+  .login-logo-mark {
+    width: 48px; height: 48px;
+    background: linear-gradient(135deg, var(--cs-gold), var(--cs-gold-dark));
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Sora', sans-serif; font-weight: 700; font-size: 18px; color: white;
+  }
+  .login-heading { font-family: 'Sora', sans-serif; font-size: 22px; font-weight: 700; color: var(--cs-text); margin-bottom: 4px; }
+  .login-sub { font-size: 14px; color: var(--cs-text-soft); margin-bottom: 28px; }
+  .login-input-wrap { position: relative; margin-bottom: 14px; }
+  .login-label { display: block; font-size: 12px; font-weight: 600; color: var(--cs-text-mid); margin-bottom: 6px; }
+  .login-input {
+    width: 100%; padding: 13px 16px;
+    background: var(--cs-bg);
+    border: 1.5px solid var(--cs-border);
+    border-radius: var(--radius-md);
+    font-size: 14px; color: var(--cs-text);
+    transition: var(--transition);
+  }
+  .login-input:focus { border-color: var(--cs-gold); background: white; box-shadow: 0 0 0 4px rgba(201,168,76,0.12); }
+  .login-btn {
+    width: 100%; padding: 14px;
+    background: linear-gradient(135deg, var(--cs-navy), var(--cs-navy-mid));
+    color: white;
+    border: none; border-radius: var(--radius-md);
+    font-family: 'Sora', sans-serif;
+    font-size: 15px; font-weight: 600;
+    cursor: pointer; margin-top: 8px;
+    transition: var(--transition);
+  }
+  .login-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(15,31,61,0.3); }
+  .login-hint { font-size: 12px; color: var(--cs-text-soft); text-align: center; margin-top: 16px; }
+  .login-bg-pattern {
+    position: absolute; inset: 0;
+    background-image: radial-gradient(circle at 20% 50%, rgba(201,168,76,0.08) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255,255,255,0.04) 0%, transparent 40%);
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 1100px) {
+    .stats-grid { grid-template-columns: repeat(2,1fr); }
+    .section-row.three { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); }
+    .main { margin-left: 0; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .section-row, .section-row.three { grid-template-columns: 1fr; }
+    .form-grid, .form-grid.three { grid-template-columns: 1fr; }
+    .form-group.span2, .form-group.full { grid-column: 1; }
+  }
+
+  /* ─── MISC ─── */
+  .dot-sep { color: var(--cs-text-soft); margin: 0 4px; }
+  .text-gold { color: var(--cs-gold-dark); }
+  .text-muted { color: var(--cs-text-soft); }
+  .text-sm { font-size: 12px; }
+  .fw-600 { font-weight: 600; }
+  .mt-4 { margin-top: 4px; }
+  .mt-8 { margin-top: 8px; }
+  .mt-16 { margin-top: 16px; }
+  .mt-24 { margin-top: 24px; }
+  .flex { display: flex; }
+  .flex-center { display: flex; align-items: center; }
+  .gap-8 { gap: 8px; }
+  .gap-12 { gap: 12px; }
+  .ml-auto { margin-left: auto; }
+
+  /* ─── NOTIF PANEL ─── */
+  .notif-panel {
+    position: absolute;
+    top: calc(100% + 8px); right: 0;
+    width: 320px;
+    background: var(--cs-surface);
+    border: 1px solid var(--cs-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    z-index: 100;
+    display: none;
+    overflow: hidden;
+  }
+  .notif-panel.open { display: block; animation: fadeIn 0.15s ease; }
+  .notif-header { padding: 14px 16px; border-bottom: 1px solid var(--cs-border); display: flex; justify-content: space-between; align-items: center; }
+  .notif-item { display: flex; gap: 10px; padding: 12px 16px; border-bottom: 1px solid rgba(15,31,61,0.05); cursor: pointer; transition: var(--transition); }
+  .notif-item:hover { background: var(--cs-surface2); }
+  .notif-item.unread { background: rgba(201,168,76,0.04); }
+  .notif-dot-ind { width: 7px; height: 7px; border-radius: 50%; background: var(--cs-gold); flex-shrink: 0; margin-top: 5px; }
+  .notif-text { font-size: 12px; color: var(--cs-text-mid); line-height: 1.5; }
+  .notif-text strong { color: var(--cs-text); }
+  .notif-time { font-size: 10px; color: var(--cs-text-soft); margin-top: 3px; }
+
+  /* ─── MINI CHART ─── */
+  .mini-chart { display: flex; align-items: flex-end; gap: 4px; height: 48px; }
+  .mini-bar { flex: 1; border-radius: 3px 3px 0 0; background: var(--cs-bg); transition: var(--transition); }
+  .mini-bar:hover { opacity: 0.85; }
+  .mini-bar.active { background: var(--cs-gold); }
+  .mini-bar.past { background: rgba(201,168,76,0.35); }
+
+  /* ─── QUICK ACTIONS ─── */
+  .quick-action {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 8px; padding: 16px 12px;
+    background: var(--cs-surface);
+    border: 1px solid var(--cs-border);
+    border-radius: var(--radius-lg);
+    cursor: pointer; text-align: center;
+    transition: var(--transition);
+    box-shadow: var(--shadow-sm);
+  }
+  .quick-action:hover { background: var(--cs-navy); border-color: var(--cs-navy); }
+  .quick-action:hover .qa-icon { background: rgba(255,255,255,0.12); color: white; }
+  .quick-action:hover .qa-label { color: white; }
+  .qa-icon {
+    width: 40px; height: 40px;
+    background: var(--cs-bg);
+    border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    transition: var(--transition);
+  }
+  .qa-label { font-size: 12px; font-weight: 600; color: var(--cs-text-mid); transition: var(--transition); }
+
+  /* Tag chip */
+  .tag-chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: var(--cs-bg); border: 1px solid var(--cs-border);
+    border-radius: 20px; padding: 3px 10px;
+    font-size: 11px; color: var(--cs-text-mid); font-weight: 500;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════
+     LOGIN PAGE
+═══════════════════════════════════════════════════════ -->
+<div id="login-page">
+  <div class="login-bg-pattern"></div>
+  <div class="login-card" style="position:relative;z-index:1;">
+    <div class="login-logo">
+      <div class="login-logo-mark">CS</div>
+      <div>
+        <div style="font-family:'Sora',sans-serif;font-weight:700;font-size:16px;color:var(--cs-text);">CS Empreendimentos</div>
+        <div style="font-size:11px;color:var(--cs-text-soft);letter-spacing:1px;text-transform:uppercase;">CRM Comercial</div>
+      </div>
+    </div>
+    <div class="login-heading">Bem-vindo de volta</div>
+    <div class="login-sub">Acesse sua conta para continuar</div>
+    <label class="login-label">E-mail</label>
+    <div class="login-input-wrap">
+      <input class="login-input" type="email" value="lucas@csempreendimentos.com.br" placeholder="seu@email.com">
+    </div>
+    <label class="login-label">Senha</label>
+    <div class="login-input-wrap">
+      <input class="login-input" type="password" value="••••••••••" placeholder="Sua senha">
+    </div>
+    <button class="login-btn" onclick="doLogin()">Entrar no sistema</button>
+    <div class="login-hint">Use: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="93ffe6f0f2e0d3f0e0f6fee3e1f6f6fdf7fafef6fde7fce0bdf0fcfebdf1e1">[email&#160;protected]</a> / qualquer senha</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     MAIN APP
+═══════════════════════════════════════════════════════ -->
+<div id="app" style="display:none;">
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">CS</div>
+    <div class="logo-text">
+      <span>CS Empreendimentos</span>
+      <span>CRM Comercial</span>
+    </div>
+  </div>
+
+  <div class="sidebar-section-label">Principal</div>
+  <div class="nav-item active" onclick="nav('dashboard')">
+    <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    Dashboard
+  </div>
+  <div class="nav-item" onclick="nav('leads')">
+    <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    Leads
+    <span class="nav-badge">32</span>
+  </div>
+  <div class="nav-item" onclick="nav('kanban')">
+    <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="5" height="18" rx="1"/><rect x="10" y="3" width="5" height="12" rx="1"/><rect x="17" y="3" width="5" height="15" rx="1"/></svg>
+    Funil Kanban
+  </div>
+  <div class="nav-item" onclick="nav('empreendimentos')">
+    <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    Empreendimentos
+  </div>
+
+  <div class="sidebar-section-label">Atividades</div>
+  <div class="nav-item" onclick="nav('agenda')">
+    <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    Agenda
+    <span class="nav-badge">5</span>
+  </div>
+  <div class="nav-item" onclick="nav('tarefas')">
+    <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+    Tarefas
+    <span class="nav-badge">8</span>
+  </div>
+  <div class="nav-item" onclick="nav('propostas')">
+    <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+    Propostas
+  </div>
+
+  <div class="sidebar-section-label">Análise</div>
+  <div class="nav-item" onclick="nav('relatorios')">
+    <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    Relatórios
+  </div>
+
+  <div class="sidebar-section-label">Gestão</div>
+  <div class="nav-item" onclick="nav('usuarios')">
+    <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    Usuários
+  </div>
+  <div class="nav-item" onclick="nav('configuracoes')">
+    <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    Configurações
+  </div>
+
+  <div class="sidebar-bottom">
+    <div class="user-card">
+      <div class="avatar">LC</div>
+      <div class="user-info">
+        <span>Lucas Carvalho</span>
+        <span>Gerente Comercial</span>
+      </div>
+      <div class="user-menu-icon">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- TOPBAR -->
+<div class="main">
+<div class="topbar">
+  <div>
+    <div class="topbar-title" id="topbar-title">Dashboard</div>
+    <div class="topbar-sub" id="topbar-sub">Visão geral comercial · Abril 2025</div>
+  </div>
+  <div class="topbar-actions">
+    <div class="search-box">
+      <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Buscar lead, empreendimento...">
+    </div>
+    <div class="icon-btn" style="position:relative;" onclick="toggleNotif()">
+      <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <div class="notif-dot"></div>
+      <div class="notif-panel" id="notif-panel">
+        <div class="notif-header">
+          <span style="font-size:13px;font-weight:600;">Notificações</span>
+          <span style="font-size:11px;color:var(--cs-gold-dark);cursor:pointer;">Marcar todas como lidas</span>
+        </div>
+        <div class="notif-item unread">
+          <div class="notif-dot-ind"></div>
+          <div>
+            <div class="notif-text"><strong>Rafael Andrade</strong> tem visita agendada hoje às 14h</div>
+            <div class="notif-time">Há 12 minutos</div>
+          </div>
+        </div>
+        <div class="notif-item unread">
+          <div class="notif-dot-ind"></div>
+          <div>
+            <div class="notif-text">Novo lead <strong>Fernanda Lima</strong> via Instagram · Aurora Residence</div>
+            <div class="notif-time">Há 38 minutos</div>
+          </div>
+        </div>
+        <div class="notif-item unread">
+          <div class="notif-dot-ind"></div>
+          <div>
+            <div class="notif-text"><strong>Carlos Mendes</strong> solicitou proposta para Florata Premium</div>
+            <div class="notif-time">Há 1 hora</div>
+          </div>
+        </div>
+        <div class="notif-item">
+          <div style="width:7px;"></div>
+          <div>
+            <div class="notif-text"><strong>Mariana Costa</strong> movida para "Em Negociação"</div>
+            <div class="notif-time">Ontem, 17:42</div>
+          </div>
+        </div>
+        <div class="notif-item">
+          <div style="width:7px;"></div>
+          <div>
+            <div class="notif-text">Lembrete: follow-up com <strong>João Pereira</strong> vence amanhã</div>
+            <div class="notif-time">Ontem, 09:00</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="btn btn-gold btn-sm" onclick="openModal('modal-novo-lead')">
+      <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Novo Lead
+    </button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     DASHBOARD
+════════════════════════════════════════════ -->
+<div class="page active" id="page-dashboard">
+  <div class="stats-grid">
+    <div class="stat-card" style="--accent:#C9A84C;">
+      <div class="stat-label">Leads Ativos</div>
+      <div class="stat-value">127</div>
+      <div class="stat-trend up">↑ +14 este mês</div>
+      <div class="stat-sub">32 aguardando atendimento</div>
+    </div>
+    <div class="stat-card" style="--accent:#1A7F5A;">
+      <div class="stat-label">Fechamentos</div>
+      <div class="stat-value">18</div>
+      <div class="stat-trend up">↑ +3 vs mês anterior</div>
+      <div class="stat-sub">R$ 14,2M em contratos</div>
+    </div>
+    <div class="stat-card" style="--accent:#1A5CB7;">
+      <div class="stat-label">Visitas este mês</div>
+      <div class="stat-value">43</div>
+      <div class="stat-trend up">↑ 34% conversão</div>
+      <div class="stat-sub">5 agendadas esta semana</div>
+    </div>
+    <div class="stat-card" style="--accent:#C0392B;">
+      <div class="stat-label">Taxa de Conversão</div>
+      <div class="stat-value">14,2%</div>
+      <div class="stat-trend up">↑ +2.1pp vs anterior</div>
+      <div class="stat-sub">Meta: 16%</div>
+    </div>
+  </div>
+
+  <!-- QUICK ACTIONS -->
+  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px;">
+    <div class="quick-action" onclick="openModal('modal-novo-lead')">
+      <div class="qa-icon">👤</div>
+      <div class="qa-label">Novo Lead</div>
+    </div>
+    <div class="quick-action" onclick="nav('agenda')">
+      <div class="qa-icon">📅</div>
+      <div class="qa-label">Agendar Visita</div>
+    </div>
+    <div class="quick-action" onclick="nav('kanban')">
+      <div class="qa-icon">📋</div>
+      <div class="qa-label">Ver Funil</div>
+    </div>
+    <div class="quick-action" onclick="nav('propostas')">
+      <div class="qa-icon">📄</div>
+      <div class="qa-label">Nova Proposta</div>
+    </div>
+    <div class="quick-action" onclick="nav('relatorios')">
+      <div class="qa-icon">📊</div>
+      <div class="qa-label">Relatórios</div>
+    </div>
+  </div>
+
+  <div class="section-row">
+    <!-- FUNIL VISUAL -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Funil de Vendas</div>
+        <span class="text-sm text-muted">Abril 2025</span>
+      </div>
+      <div class="card-body">
+        <div class="funnel-bar">
+          <div class="funnel-step">
+            <div class="funnel-label">Novo Lead</div>
+            <div class="funnel-bar-wrap">
+              <div class="funnel-bar-fill" style="width:100%;background:linear-gradient(90deg,#1A5CB7,#2E7DD6);">
+                <span>32 leads</span>
+              </div>
+            </div>
+            <div class="funnel-num">32</div>
+          </div>
+          <div class="funnel-step">
+            <div class="funnel-label">Em Atendimento</div>
+            <div class="funnel-bar-wrap">
+              <div class="funnel-bar-fill" style="width:72%;background:linear-gradient(90deg,#6B35C2,#8B55E2);">
+                <span>23 leads</span>
+              </div>
+            </div>
+            <div class="funnel-num">23</div>
+          </div>
+          <div class="funnel-step">
+            <div class="funnel-label">Qualificado</div>
+            <div class="funnel-bar-wrap">
+              <div class="funnel-bar-fill" style="width:56%;background:linear-gradient(90deg,#B7770D,#D4920F);">
+                <span>18 leads</span>
+              </div>
+            </div>
+            <div class="funnel-num">18</div>
+          </div>
+          <div class="funnel-step">
+            <div class="funnel-label">Visita Agendada</div>
+            <div class="funnel-bar-wrap">
+              <div class="funnel-bar-fill" style="width:44%;background:linear-gradient(90deg,#1A7CA8,#2494CA);">
+                <span>14 leads</span>
+              </div>
+            </div>
+            <div class="funnel-num">14</div>
+          </div>
+          <div class="funnel-step">
+            <div class="funnel-label">Visitou</div>
+            <div class="funnel-bar-wrap">
+              <div class="funnel-bar-fill" style="width:34%;background:linear-gradient(90deg,#C9A84C,#E0C070);">
+                <span>11 leads</span>
+              </div>
+            </div>
+            <div class="funnel-num">11</div>
+          </div>
+          <div class="funnel-step">
+            <div class="funnel-label">Proposta Enviada</div>
+            <div class="funnel-bar-wrap">
+              <div class="funnel-bar-fill" style="width:25%;background:linear-gradient(90deg,#0F6E56,#1A9070);">
+                <span>8 leads</span>
+              </div>
+            </div>
+            <div class="funnel-num">8</div>
+          </div>
+          <div class="funnel-step">
+            <div class="funnel-label">Em Negociação</div>
+            <div class="funnel-bar-wrap">
+              <div class="funnel-bar-fill" style="width:19%;background:linear-gradient(90deg,#B35F0A,#D0750C);">
+                <span>6 leads</span>
+              </div>
+            </div>
+            <div class="funnel-num">6</div>
+          </div>
+          <div class="funnel-step">
+            <div class="funnel-label">Fechado</div>
+            <div class="funnel-bar-wrap">
+              <div class="funnel-bar-fill" style="width:56%;background:linear-gradient(90deg,#1A7F5A,#24A870);">
+                <span>18 fechados</span>
+              </div>
+            </div>
+            <div class="funnel-num">18</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEADS RECENTES -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Leads Recentes</div>
+        <button class="btn btn-outline btn-sm" onclick="nav('leads')">Ver todos</button>
+      </div>
+      <div class="card-body" style="padding-top:12px;">
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div class="flex-center gap-12" style="padding:10px;background:var(--cs-surface2);border-radius:var(--radius-md);cursor:pointer;" onclick="nav('lead-detail')">
+            <div class="avatar" style="background:#EBF2FC;color:var(--cs-blue);">FL</div>
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:600;color:var(--cs-text);">Fernanda Lima</div>
+              <div style="font-size:11px;color:var(--cs-text-soft);">Aurora Residence · Instagram</div>
+            </div>
+            <span class="badge badge-novo">Novo</span>
+          </div>
+          <div class="flex-center gap-12" style="padding:10px;background:var(--cs-surface2);border-radius:var(--radius-md);cursor:pointer;">
+            <div class="avatar" style="background:var(--cs-amber-bg);color:var(--cs-amber);">RA</div>
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:600;color:var(--cs-text);">Rafael Andrade</div>
+              <div style="font-size:11px;color:var(--cs-text-soft);">Florata Premium · Indicação</div>
+            </div>
+            <span class="badge badge-visita">Visita hoje</span>
+          </div>
+          <div class="flex-center gap-12" style="padding:10px;background:var(--cs-surface2);border-radius:var(--radius-md);cursor:pointer;">
+            <div class="avatar" style="background:var(--cs-purple-bg);color:var(--cs-purple);">CM</div>
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:600;color:var(--cs-text);">Carlos Mendes</div>
+              <div style="font-size:11px;color:var(--cs-text-soft);">Florata Premium · Google Ads</div>
+            </div>
+            <span class="badge badge-proposta">Proposta</span>
+          </div>
+          <div class="flex-center gap-12" style="padding:10px;background:var(--cs-surface2);border-radius:var(--radius-md);cursor:pointer;">
+            <div class="avatar" style="background:var(--cs-green-bg);color:var(--cs-green);">MC</div>
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:600;color:var(--cs-text);">Mariana Costa</div>
+              <div style="font-size:11px;color:var(--cs-text-soft);">House Premium · Facebook</div>
+            </div>
+            <span class="badge badge-negociacao">Negociação</span>
+          </div>
+          <div class="flex-center gap-12" style="padding:10px;background:var(--cs-surface2);border-radius:var(--radius-md);cursor:pointer;">
+            <div class="avatar" style="background:var(--cs-bg);color:var(--cs-text-mid);">JP</div>
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:600;color:var(--cs-text);">João Pereira</div>
+              <div style="font-size:11px;color:var(--cs-text-soft);">Aurora Residence · Portal</div>
+            </div>
+            <span class="badge badge-aguardando">Aguardando</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM ROW -->
+  <div class="section-row three">
+    <!-- AGENDA HOJE -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Agenda de Hoje</div>
+        <button class="btn btn-outline btn-sm" onclick="nav('agenda')">Ver agenda</button>
+      </div>
+      <div class="card-body" style="padding-top:14px;">
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div class="agenda-event" style="--event-color:#C9A84C;">
+            <div class="event-time">09:30</div>
+            <div>
+              <div class="event-title">Follow-up · João Pereira</div>
+              <div class="event-sub">Aurora Residence · Ligar</div>
+            </div>
+          </div>
+          <div class="agenda-event" style="--event-color:#1A7CA8;">
+            <div class="event-time">14:00</div>
+            <div>
+              <div class="event-title">Visita · Rafael Andrade</div>
+              <div class="event-sub">Florata Premium · Decorado</div>
+            </div>
+          </div>
+          <div class="agenda-event" style="--event-color:#6B35C2;">
+            <div class="event-time">16:30</div>
+            <div>
+              <div class="event-title">Proposta · Carlos Mendes</div>
+              <div class="event-sub">Florata Premium · Videoconferência</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- POR EMPREENDIMENTO -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Por Empreendimento</div>
+      </div>
+      <div class="card-body">
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div>
+            <div class="flex-center gap-8 mt-4" style="margin-bottom:6px;">
+              <div style="width:10px;height:10px;border-radius:50%;background:#2d6a4f;"></div>
+              <span style="font-size:13px;font-weight:600;">Aurora Residence</span>
+              <span class="ml-auto" style="font-size:12px;color:var(--cs-text-soft);">47 leads</span>
+            </div>
+            <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:68%;"></div></div>
+            <div style="font-size:11px;color:var(--cs-text-soft);margin-top:4px;">7 fechamentos · R$ 5,4M</div>
+          </div>
+          <div>
+            <div class="flex-center gap-8 mt-4" style="margin-bottom:6px;">
+              <div style="width:10px;height:10px;border-radius:50%;background:#4a2d7a;"></div>
+              <span style="font-size:13px;font-weight:600;">Florata Premium</span>
+              <span class="ml-auto" style="font-size:12px;color:var(--cs-text-soft);">52 leads</span>
+            </div>
+            <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:82%;background:linear-gradient(90deg,#6B35C2,#8B55E2);"></div></div>
+            <div style="font-size:11px;color:var(--cs-text-soft);margin-top:4px;">8 fechamentos · R$ 6,8M</div>
+          </div>
+          <div>
+            <div class="flex-center gap-8 mt-4" style="margin-bottom:6px;">
+              <div style="width:10px;height:10px;border-radius:50%;background:#2d4a7a;"></div>
+              <span style="font-size:13px;font-weight:600;">House Premium</span>
+              <span class="ml-auto" style="font-size:12px;color:var(--cs-text-soft);">28 leads</span>
+            </div>
+            <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:44%;background:linear-gradient(90deg,#1A5CB7,#2E7DD6);"></div></div>
+            <div style="font-size:11px;color:var(--cs-text-soft);margin-top:4px;">3 fechamentos · R$ 2,0M</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CORRETORES -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Top Corretores</div>
+        <span class="text-sm text-muted">Este mês</span>
+      </div>
+      <div class="card-body">
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div class="flex-center gap-12">
+            <div style="font-size:13px;font-weight:700;color:var(--cs-gold-dark);width:18px;">1</div>
+            <div class="avatar" style="background:var(--cs-amber-bg);color:var(--cs-amber);width:30px;height:30px;font-size:11px;">PS</div>
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:600;">Priscila Santos</div>
+              <div style="font-size:11px;color:var(--cs-text-soft);">6 fechamentos</div>
+            </div>
+            <span style="font-size:12px;font-weight:700;color:var(--cs-green);">R$ 4,8M</span>
+          </div>
+          <div class="flex-center gap-12">
+            <div style="font-size:13px;font-weight:700;color:var(--cs-text-mid);width:18px;">2</div>
+            <div class="avatar" style="background:var(--cs-blue-bg);color:var(--cs-blue);width:30px;height:30px;font-size:11px;">MO</div>
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:600;">Marcos Oliveira</div>
+              <div style="font-size:11px;color:var(--cs-text-soft);">5 fechamentos</div>
+            </div>
+            <span style="font-size:12px;font-weight:700;color:var(--cs-green);">R$ 4,1M</span>
+          </div>
+          <div class="flex-center gap-12">
+            <div style="font-size:13px;font-weight:700;color:var(--cs-text-soft);width:18px;">3</div>
+            <div class="avatar" style="background:var(--cs-purple-bg);color:var(--cs-purple);width:30px;height:30px;font-size:11px;">AV</div>
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:600;">Ana Vieira</div>
+              <div style="font-size:11px;color:var(--cs-text-soft);">4 fechamentos</div>
+            </div>
+            <span style="font-size:12px;font-weight:700;color:var(--cs-green);">R$ 3,3M</span>
+          </div>
+          <div class="flex-center gap-12">
+            <div style="font-size:13px;font-weight:700;color:var(--cs-text-soft);width:18px;">4</div>
+            <div class="avatar" style="background:var(--cs-green-bg);color:var(--cs-green);width:30px;height:30px;font-size:11px;">LC</div>
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:600;">Lucas Carvalho</div>
+              <div style="font-size:11px;color:var(--cs-text-soft);">3 fechamentos</div>
+            </div>
+            <span style="font-size:12px;font-weight:700;color:var(--cs-green);">R$ 2,6M</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     LEADS LIST
+════════════════════════════════════════════ -->
+<div class="page" id="page-leads">
+  <div class="card">
+    <div class="filter-bar">
+      <select class="filter-select">
+        <option>Todos os empreendimentos</option>
+        <option>Aurora Residence</option>
+        <option>Florata Premium Residence</option>
+        <option>House Premium Residence</option>
+      </select>
+      <select class="filter-select">
+        <option>Todas as etapas</option>
+        <option>Novo Lead</option>
+        <option>Em Atendimento</option>
+        <option>Qualificado</option>
+        <option>Visita Agendada</option>
+        <option>Proposta Enviada</option>
+        <option>Fechado</option>
+        <option>Perdido</option>
+      </select>
+      <select class="filter-select">
+        <option>Todos os corretores</option>
+        <option>Priscila Santos</option>
+        <option>Marcos Oliveira</option>
+        <option>Ana Vieira</option>
+        <option>Lucas Carvalho</option>
+      </select>
+      <select class="filter-select">
+        <option>Temperatura</option>
+        <option>Quente</option>
+        <option>Morno</option>
+        <option>Frio</option>
+      </select>
+      <div class="ml-auto flex-center gap-8">
+        <button class="btn btn-outline btn-sm">
+          <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Exportar
+        </button>
+        <button class="btn btn-gold btn-sm" onclick="openModal('modal-novo-lead')">+ Novo Lead</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Empreendimento</th>
+            <th>Etapa</th>
+            <th>Temperatura</th>
+            <th>Corretor</th>
+            <th>Origem</th>
+            <th>Último contato</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr onclick="nav('lead-detail')" style="cursor:pointer;">
+            <td>
+              <div class="flex-center gap-8">
+                <span class="priority priority-alta"></span>
+                <div>
+                  <div>Fernanda Lima</div>
+                  <div style="font-size:11px;color:var(--cs-text-soft);">(11) 9 8765-4321</div>
+                </div>
+              </div>
+            </td>
+            <td>Aurora Residence</td>
+            <td><span class="badge badge-novo">Novo Lead</span></td>
+            <td><span class="badge badge-quente">🔥 Quente</span></td>
+            <td>Priscila Santos</td>
+            <td><span class="tag-chip">Instagram</span></td>
+            <td>Hoje, 10:23</td>
+            <td>
+              <div class="flex-center gap-6">
+                <div class="wpp-btn" onclick="event.stopPropagation()">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+                  WhatsApp
+                </div>
+                <button class="btn btn-outline btn-sm" onclick="event.stopPropagation();nav('lead-detail')">Abrir</button>
+              </div>
+            </td>
+          </tr>
+          <tr style="cursor:pointer;">
+            <td>
+              <div class="flex-center gap-8">
+                <span class="priority priority-alta"></span>
+                <div>
+                  <div>Rafael Andrade</div>
+                  <div style="font-size:11px;color:var(--cs-text-soft);">(21) 9 9876-5432</div>
+                </div>
+              </div>
+            </td>
+            <td>Florata Premium</td>
+            <td><span class="badge badge-visita">Visita Agendada</span></td>
+            <td><span class="badge badge-quente">🔥 Quente</span></td>
+            <td>Marcos Oliveira</td>
+            <td><span class="tag-chip">Indicação</span></td>
+            <td>Ontem, 15:40</td>
+            <td>
+              <div class="flex-center gap-6">
+                <div class="wpp-btn"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg> WhatsApp</div>
+                <button class="btn btn-outline btn-sm">Abrir</button>
+              </div>
+            </td>
+          </tr>
+          <tr style="cursor:pointer;">
+            <td>
+              <div class="flex-center gap-8">
+                <span class="priority priority-alta"></span>
+                <div>
+                  <div>Carlos Mendes</div>
+                  <div style="font-size:11px;color:var(--cs-text-soft);">(31) 9 7654-3210</div>
+                </div>
+              </div>
+            </td>
+            <td>Florata Premium</td>
+            <td><span class="badge badge-proposta">Proposta Enviada</span></td>
+            <td><span class="badge badge-quente">🔥 Quente</span></td>
+            <td>Priscila Santos</td>
+            <td><span class="tag-chip">Google Ads</span></td>
+            <td>Hoje, 08:15</td>
+            <td>
+              <div class="flex-center gap-6">
+                <div class="wpp-btn"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg> WhatsApp</div>
+                <button class="btn btn-outline btn-sm">Abrir</button>
+              </div>
+            </td>
+          </tr>
+          <tr style="cursor:pointer;">
+            <td>
+              <div class="flex-center gap-8">
+                <span class="priority priority-media"></span>
+                <div>
+                  <div>Mariana Costa</div>
+                  <div style="font-size:11px;color:var(--cs-text-soft);">(51) 9 8901-2345</div>
+                </div>
+              </div>
+            </td>
+            <td>House Premium</td>
+            <td><span class="badge badge-negociacao">Em Negociação</span></td>
+            <td><span class="badge badge-morno">🟡 Morno</span></td>
+            <td>Ana Vieira</td>
+            <td><span class="tag-chip">Facebook</span></td>
+            <td>Ontem, 11:20</td>
+            <td>
+              <div class="flex-center gap-6">
+                <div class="wpp-btn"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg> WhatsApp</div>
+                <button class="btn btn-outline btn-sm">Abrir</button>
+              </div>
+            </td>
+          </tr>
+          <tr style="cursor:pointer;">
+            <td>
+              <div class="flex-center gap-8">
+                <span class="priority priority-baixa"></span>
+                <div>
+                  <div>João Pereira</div>
+                  <div style="font-size:11px;color:var(--cs-text-soft);">(85) 9 7890-1234</div>
+                </div>
+              </div>
+            </td>
+            <td>Aurora Residence</td>
+            <td><span class="badge badge-aguardando">Aguardando Retorno</span></td>
+            <td><span class="badge badge-frio">🔵 Frio</span></td>
+            <td>Lucas Carvalho</td>
+            <td><span class="tag-chip">Portal Imob.</span></td>
+            <td>3 dias atrás</td>
+            <td>
+              <div class="flex-center gap-6">
+                <div class="wpp-btn"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg> WhatsApp</div>
+                <button class="btn btn-outline btn-sm">Abrir</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 22px;border-top:1px solid var(--cs-border);">
+      <span style="font-size:12px;color:var(--cs-text-soft);">Mostrando 1–5 de 127 leads</span>
+      <div class="flex-center gap-8">
+        <button class="btn btn-outline btn-sm">← Anterior</button>
+        <button class="btn btn-primary btn-sm">Próxima →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     KANBAN
+════════════════════════════════════════════ -->
+<div class="page" id="page-kanban">
+  <div style="margin-bottom:16px;display:flex;align-items:center;gap:12px;">
+    <select class="filter-select">
+      <option>Todos os empreendimentos</option>
+      <option>Aurora Residence</option>
+      <option>Florata Premium Residence</option>
+      <option>House Premium Residence</option>
+    </select>
+    <select class="filter-select">
+      <option>Todos os corretores</option>
+      <option>Priscila Santos</option>
+      <option>Marcos Oliveira</option>
+    </select>
+    <button class="btn btn-gold btn-sm ml-auto" onclick="openModal('modal-novo-lead')">+ Novo Lead</button>
+  </div>
+  <div class="kanban-wrap">
+    <div class="kanban-board" id="kanban-board">
+
+      <!-- NOVO LEAD -->
+      <div class="kanban-col">
+        <div class="kanban-col-header">
+          <div class="kanban-col-title">🆕 Novo Lead</div>
+          <span class="kanban-count">3</span>
+        </div>
+        <div class="kanban-col-body">
+          <div class="lead-card" onclick="nav('lead-detail')">
+            <div class="lead-card-top">
+              <div>
+                <div class="lead-name">Fernanda Lima</div>
+                <div class="lead-phone">(11) 9 8765-4321</div>
+              </div>
+              <span class="badge badge-quente" style="font-size:10px;">🔥</span>
+            </div>
+            <div class="lead-card-meta">
+              <div class="lead-meta-row">🏢 Aurora Residence</div>
+              <div class="lead-meta-row">👤 Priscila Santos</div>
+              <div class="lead-meta-row">📱 Instagram · Hoje</div>
+            </div>
+            <div class="lead-card-actions">
+              <div class="wpp-btn"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg> WPP</div>
+              <div class="card-open-btn" onclick="event.stopPropagation();nav('lead-detail')">Abrir →</div>
+            </div>
+          </div>
+          <div class="lead-card">
+            <div class="lead-card-top">
+              <div>
+                <div class="lead-name">Beatriz Rocha</div>
+                <div class="lead-phone">(41) 9 6543-2109</div>
+              </div>
+              <span class="badge badge-morno" style="font-size:10px;">🟡</span>
+            </div>
+            <div class="lead-card-meta">
+              <div class="lead-meta-row">🏢 House Premium</div>
+              <div class="lead-meta-row">👤 Lucas Carvalho</div>
+              <div class="lead-meta-row">📱 Facebook · Ontem</div>
+            </div>
+            <div class="lead-card-actions">
+              <div class="wpp-btn"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg> WPP</div>
+              <div class="card-open-btn">Abrir →</div>
+            </div>
+          </div>
+          <div class="lead-card">
+            <div class="lead-card-top">
+              <div>
+                <div class="lead-name">Paulo Henrique</div>
+                <div class="lead-phone">(62) 9 5432-1098</div>
+              </div>
+              <span class="badge badge-frio" style="font-size:10px;">🔵</span>
+            </div>
+            <div class="lead-card-meta">
+              <div class="lead-meta-row">🏢 Florata Premium</div>
+              <div class="lead-meta-row">👤 Ana Vieira</div>
+              <div class="lead-meta-row">📱 Google Ads · 2d</div>
+            </div>
+            <div class="lead-card-actions">
+              <div class="wpp-btn"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg> WPP</div>
+              <div class="card-open-btn">Abrir →</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EM ATENDIMENTO -->
+      <div class="kanban-col">
+        <div class="kanban-col-header">
+          <div class="kanban-col-title">📞 Em Atendimento</div>
+          <span class="kanban-count">2</span>
+        </div>
+        <div class="kanban-col-body">
+          <div class="lead-card">
+            <div class="lead-card-top">
+              <div>
+                <div class="lead-name">Luíza Ferreira</div>
+                <div class="lead-phone">(71) 9 4321-0987</div>
+              </div>
+              <span class="badge badge-quente" style="font-size:10px;">🔥</span>
+            </div>
+            <div class="lead-card-meta">
+              <div class="lead-meta-row">🏢 Aurora Residence</div>
+              <div class="lead-meta-row">👤 Priscila Santos</div>
+              <div class="lead-meta-row">📞 2 contatos feitos</div>
+            </div>
+            <div class="lead-card-actions">
+              <div class="wpp-btn"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg> WPP</div>
+              <div class="card-open-btn">Abrir →</div>
+            </div>
+          </div>
+          <div class="lead-card">
+            <div class="lead-card-top">
+              <div>
+                <div class="lead-name">Rodrigo Neves</div>
+                <div class="lead-phone">(81) 9 3210-9876</div>
+              </div>
+              <span class="badge badge-morno" style="font-size:10px;">🟡</span>
+            </div>
+            <div class="lead-card-meta">
+              <div class="lead-meta-row">🏢 Florata Premium</div>
+              <div class="lead-meta-row">👤 Marcos Oliveira</div>
+              <div class="lead-meta-row">📞 1 contato feito</div>
+            </div>
+            <div class="lead-card-actions">
+              <div class="wpp-btn"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg> WPP</div>
+              <div class="card-open-btn">Abrir →</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- QUALIFICADO -->
+      <div class="kanban-col">
+        <div class="kanban-col-header">
+          <div class="kanban-col-title">✅ Qualificado</div>
+          <span class="kanban-count">2</span>
+        </div>
+        <div class="kanban-col-body">
+          <div class="lead-card">
+            <div class="lead-card-top">
+              <div>
+                <div class="lead-name">Sandra Alves</div>
+                <div class="lead-phone">(91) 9 2109-8765</div>
+              </div>
+              <span class="badge badge-quente" style="font-size:10px;">🔥</span>
+            </div>
+            <div class="lead-card-meta">
+              <div class="lead-meta-row">🏢 Aurora Residence</div>
+              <div class="lead-meta-row">👤 Ana Vieira</div>
+              <div class="lead-meta-row">💰 R$ 650k · Financia</div>
+            </div>
+            <div class="lead-card-actions">
+              <div class="wpp-btn"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg> WPP</div>
+              <div class="card-open-btn">Abrir →</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VISITA AGENDADA -->
+      <div class="kanban-col">
+        <div class="kanban-col-header">
+          <div class="kanban-col-title">📍 Visita Agendada</div>
+          <span class="kanban-count">1</span>
+        </div>
+        <div class="kanban-col-body">
+          <div class="lead-card" style="border-left:3px solid #1A7CA8;">
+            <div class="lead-card-top">
+              <div>
+                <div class="lead-name">Rafael Andrade</div>
+                <div class="lead-phone">(21) 9 9876-5432</div>
+              </div>
+              <span class="badge badge-quente" style="font-size:10px;">🔥</span>
+            </div>
+            <div class="lead-card-meta">
+              <div class="lead-meta-row">🏢 Florata Premium</div>
+              <div class="lead-meta-row">👤 Marcos Oliveira</div>
+              <div class="lead-meta-row" style="color:#1A7CA8;font-weight:600;">📅 Hoje, 14:00</div>
+            </div>
+            <div class="lead-card-actions">
+              <div class="wpp-btn"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg> WPP</div>
+              <div class="card-open-btn">Abrir →</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROPOSTA ENVIADA -->
+      <div class="kanban-col">
+        <div class="kanban-col-header">
+          <div class="kanban-col-title">📄 Proposta Enviada</div>
+          <span class="kanban-count">1</span>
+        </div>
+        <div class="kanban-col-body">
+          <div class="lead-card" style="border-left:3px solid var(--cs-green);">
+            <div class="lead-card-top">
+              <div>
+                <div class="lead-name">Carlos Mendes</div>
+                <div class="lead-phone">(31) 9 7654-3210</div>
+              </div>
+              <span class="badge badge-quente" style="font-size:10px;">🔥</span>
+            </div>
+            <div class="lead-card-meta">
+              <div class="lead-meta-row">🏢 Florata Premium</div>
+              <div class="lead-meta-row">👤 Priscila Santos</div>
+              <div class="lead-meta-row" style="color:var(--cs-green);font-weight:600;">💰 Apto 3 suítes · R$820k</div>
+            </div>
+            <div class="lead-card-actions">
+              <div class="wpp-btn"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg> WPP</div>
+              <div class="card-open-btn">Abrir →</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EM NEGOCIAÇÃO -->
+      <div class="kanban-col">
+        <div class="kanban-col-header">
+          <div class="kanban-col-title">🤝 Em Negociação</div>
+          <span class="kanban-count">1</span>
+        </div>
+        <div class="kanban-col-body">
+          <div class="lead-card" style="border-left:3px solid #B35F0A;">
+            <div class="lead-card-top">
+              <div>
+                <div class="lead-name">Mariana Costa</div>
+                <div class="lead-phone">(51) 9 8901-2345</div>
+              </div>
+              <span class="badge badge-morno" style="font-size:10px;">🟡</span>
+            </div>
+            <div class="lead-card-meta">
+              <div class="lead-meta-row">🏢 House Premium</div>
+              <div class="lead-meta-row">👤 Ana Vieira</div>
+              <div class="lead-meta-row" style="color:#B35F0A;font-weight:600;">⏳ Aguarda financiamento</div>
+            </div>
+            <div class="lead-card-actions">
+              <div class="wpp-btn"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg> WPP</div>
+              <div class="card-open-btn">Abrir →</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FECHADO -->
+      <div class="kanban-col">
+        <div class="kanban-col-header">
+          <div class="kanban-col-title">🏆 Fechado</div>
+          <span class="kanban-count">2</span>
+        </div>
+        <div class="kanban-col-body">
+          <div class="lead-card" style="border-left:3px solid var(--cs-green);opacity:0.85;">
+            <div class="lead-card-top">
+              <div>
+                <div class="lead-name">André Figueiredo</div>
+                <div class="lead-phone">(11) 9 1234-5678</div>
+              </div>
+              <span class="badge badge-fechado" style="font-size:10px;">✓</span>
+            </div>
+            <div class="lead-card-meta">
+              <div class="lead-meta-row">🏢 Florata Premium</div>
+              <div class="lead-meta-row" style="color:var(--cs-green);font-weight:600;">💰 Apto 801 · R$ 890k</div>
+              <div class="lead-meta-row">📅 Fechado em 12/04</div>
+            </div>
+            <div class="lead-card-actions">
+              <div class="card-open-btn" style="margin-left:0;">Ver contrato →</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     LEAD DETAIL
+════════════════════════════════════════════ -->
+<div class="page" id="page-lead-detail">
+  <div style="margin-bottom:16px;">
+    <button class="btn btn-ghost btn-sm" onclick="nav('leads')">← Voltar para Leads</button>
+  </div>
+
+  <!-- HEADER -->
+  <div class="lead-detail-header">
+    <div style="display:flex;align-items:flex-start;gap:20px;position:relative;z-index:1;">
+      <div class="avatar xl" style="background:rgba(201,168,76,0.2);color:var(--cs-gold-light);font-family:'Sora',sans-serif;">FL</div>
+      <div style="flex:1;">
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+          <h1 style="font-size:22px;font-weight:700;color:white;">Fernanda Lima</h1>
+          <span class="badge badge-quente">🔥 Lead Quente</span>
+          <span class="badge badge-novo">Novo Lead</span>
+        </div>
+        <div style="display:flex;gap:16px;margin-top:8px;flex-wrap:wrap;">
+          <span style="font-size:13px;color:rgba(255,255,255,0.6);">📱 (11) 9 8765-4321</span>
+          <span style="font-size:13px;color:rgba(255,255,255,0.6);">✉️ <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="9ff9faedf1fef1fbfeb1f3f6f2fedffaf2fef6f3b1fcf0f2">[email&#160;protected]</a></span>
+          <span style="font-size:13px;color:rgba(255,255,255,0.6);">📍 São Paulo - SP</span>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
+          <div class="wpp-btn" style="font-size:12px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+            Enviar WhatsApp
+          </div>
+          <button class="btn btn-outline btn-sm" style="border-color:rgba(255,255,255,0.3);color:rgba(255,255,255,0.8);" onclick="openModal('modal-nova-interacao')">+ Registrar Interação</button>
+          <button class="btn btn-gold btn-sm">Agendar Visita</button>
+          <button class="btn btn-outline btn-sm" style="border-color:rgba(255,255,255,0.3);color:rgba(255,255,255,0.8);">Mover no Funil</button>
+        </div>
+      </div>
+      <div style="text-align:right;flex-shrink:0;">
+        <div style="font-size:11px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Corretor responsável</div>
+        <div style="display:flex;align-items:center;gap:8px;justify-content:flex-end;">
+          <div style="font-size:13px;font-weight:600;color:white;">Priscila Santos</div>
+          <div class="avatar" style="background:rgba(201,168,76,0.2);color:var(--cs-gold-light);width:28px;height:28px;font-size:10px;">PS</div>
+        </div>
+        <div style="margin-top:8px;font-size:11px;color:rgba(255,255,255,0.4);">Entrada: 15 abr 2025</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="card" style="overflow:hidden;">
+    <div class="tab-bar">
+      <div class="tab active" onclick="switchTab(this,'tab-info')">Informações</div>
+      <div class="tab" onclick="switchTab(this,'tab-historico')">Histórico</div>
+      <div class="tab" onclick="switchTab(this,'tab-tarefas-lead')">Tarefas</div>
+      <div class="tab" onclick="switchTab(this,'tab-propostas-lead')">Propostas</div>
+    </div>
+
+    <!-- TAB INFO -->
+    <div class="tab-content active" id="tab-info">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border-bottom:1px solid var(--cs-border);">
+        <div style="padding:20px 24px;border-right:1px solid var(--cs-border);">
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--cs-text-soft);font-weight:600;margin-bottom:14px;">Empreendimento</div>
+          <div style="font-size:16px;font-weight:700;color:var(--cs-text);font-family:'Sora',sans-serif;">Aurora Residence</div>
+          <div style="font-size:12px;color:var(--cs-text-soft);margin-top:4px;">Apartamento 2 quartos</div>
+          <div style="font-size:12px;color:var(--cs-text-soft);">Faixa: R$ 550k – R$ 700k</div>
+        </div>
+        <div style="padding:20px 24px;border-right:1px solid var(--cs-border);">
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--cs-text-soft);font-weight:600;margin-bottom:14px;">Financeiro</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div><span style="font-size:11px;color:var(--cs-text-soft);">Renda familiar</span><br><span style="font-size:14px;font-weight:600;">R$ 12.500 / mês</span></div>
+            <div><span style="font-size:11px;color:var(--cs-text-soft);">Entrada disponível</span><br><span style="font-size:14px;font-weight:600;">R$ 120.000</span></div>
+            <div><span style="font-size:11px;color:var(--cs-text-soft);">Financiamento</span><br><span class="badge badge-proposta">Aprovado</span></div>
+          </div>
+        </div>
+        <div style="padding:20px 24px;">
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--cs-text-soft);font-weight:600;margin-bottom:14px;">Próxima Ação</div>
+          <div style="background:var(--cs-amber-bg);border-left:3px solid var(--cs-amber);border-radius:var(--radius-sm);padding:12px 14px;">
+            <div style="font-size:13px;font-weight:600;color:var(--cs-amber);">📅 Follow-up hoje às 16h</div>
+            <div style="font-size:12px;color:var(--cs-text-mid);margin-top:4px;">Confirmar interesse e agendar visita ao decorado</div>
+          </div>
+          <div style="margin-top:12px;font-size:12px;color:var(--cs-text-soft);">Origem: <strong>Instagram Ads</strong></div>
+          <div style="font-size:12px;color:var(--cs-text-soft);">Prazo: <strong>6 meses</strong></div>
+          <div style="font-size:12px;color:var(--cs-text-soft);">Objetivo: <strong>Moradia própria</strong></div>
+        </div>
+      </div>
+
+      <!-- CAMPOS COMPLETOS -->
+      <div style="padding:20px 24px;">
+        <div style="font-size:12px;font-weight:600;color:var(--cs-text-soft);text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;">Dados completos do lead</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;">
+          <div><div style="font-size:11px;color:var(--cs-text-soft);">Nome completo</div><div style="font-size:13px;font-weight:600;margin-top:2px;">Fernanda Lima</div></div>
+          <div><div style="font-size:11px;color:var(--cs-text-soft);">E-mail</div><div style="font-size:13px;font-weight:600;margin-top:2px;"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="dcbab9aeb2bdb2b8bdf2b0b5b1bd9cb9b1bdb5b0f2bfb3b1">[email&#160;protected]</a></div></div>
+          <div><div style="font-size:11px;color:var(--cs-text-soft);">Telefone</div><div style="font-size:13px;font-weight:600;margin-top:2px;">(11) 9 8765-4321</div></div>
+          <div><div style="font-size:11px;color:var(--cs-text-soft);">Cidade</div><div style="font-size:13px;font-weight:600;margin-top:2px;">São Paulo - SP</div></div>
+          <div><div style="font-size:11px;color:var(--cs-text-soft);">Nível de interesse</div><div style="font-size:13px;font-weight:600;margin-top:2px;">Alto ★★★★★</div></div>
+          <div><div style="font-size:11px;color:var(--cs-text-soft);">Nome p/ financiamento</div><div style="font-size:13px;font-weight:600;margin-top:2px;">Fernanda Lima</div></div>
+        </div>
+        <div style="margin-top:16px;padding:14px;background:var(--cs-surface2);border-radius:var(--radius-md);border:1px solid var(--cs-border);">
+          <div style="font-size:11px;color:var(--cs-text-soft);margin-bottom:6px;">Observações internas</div>
+          <div style="font-size:13px;color:var(--cs-text-mid);">Cliente muito interessada, viu o anúncio do Instagram e pediu mais informações sobre a planta de 2 quartos com área de lazer. Família com criança pequena, prioriza lazer no condomínio. Prefere visitar no período da tarde.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB HISTORICO -->
+    <div class="tab-content" id="tab-historico">
+      <div style="padding:20px 24px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <div style="font-size:13px;font-weight:600;">5 interações registradas</div>
+          <button class="btn btn-gold btn-sm" onclick="openModal('modal-nova-interacao')">+ Nova interação</button>
+        </div>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-dot" style="background:var(--cs-blue-bg);color:var(--cs-blue);">📱</div>
+            <div class="timeline-content">
+              <div class="timeline-title">Mensagem via WhatsApp</div>
+              <div class="timeline-meta">Priscila Santos · Hoje, 10:23</div>
+              <div class="timeline-note">Enviou catálogo completo do Aurora Residence e informações sobre o plano de pagamento. Cliente respondeu mostrando interesse na unidade 204.</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot" style="background:var(--cs-amber-bg);color:var(--cs-amber);">📞</div>
+            <div class="timeline-content">
+              <div class="timeline-title">Ligação telefônica</div>
+              <div class="timeline-meta">Priscila Santos · Ontem, 15:40</div>
+              <div class="timeline-note">Chamada de 12 minutos. Apresentou empreendimento, cliente ficou empolgada com área de lazer. Perguntou sobre financiamento. Combinou novo contato para hoje.</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot" style="background:var(--cs-green-bg);color:var(--cs-green);">🆕</div>
+            <div class="timeline-content">
+              <div class="timeline-title">Lead cadastrado no CRM</div>
+              <div class="timeline-meta">Sistema · 15/04/2025, 09:05</div>
+              <div class="timeline-note">Lead recebido via Instagram Ads. Formulário preenchido com interesse em 2 quartos no Aurora Residence. Distribuído automaticamente para Priscila Santos.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB TAREFAS LEAD -->
+    <div class="tab-content" id="tab-tarefas-lead">
+      <div style="padding:20px 24px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <div style="font-size:13px;font-weight:600;">3 tarefas</div>
+          <button class="btn btn-outline btn-sm">+ Nova tarefa</button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--cs-amber-bg);border-radius:var(--radius-md);border:1px solid rgba(183,119,13,0.2);">
+            <input type="checkbox" style="width:16px;height:16px;cursor:pointer;">
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:600;color:var(--cs-text);">Fazer follow-up para confirmar visita</div>
+              <div style="font-size:11px;color:var(--cs-amber);margin-top:2px;">⏰ Hoje, 16:00 · Priscila Santos</div>
+            </div>
+            <span class="badge badge-atendimento">Urgente</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--cs-surface2);border-radius:var(--radius-md);border:1px solid var(--cs-border);">
+            <input type="checkbox" style="width:16px;height:16px;cursor:pointer;">
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:600;color:var(--cs-text);">Agendar visita ao decorado Aurora</div>
+              <div style="font-size:11px;color:var(--cs-text-soft);margin-top:2px;">📅 17/04/2025 · Priscila Santos</div>
+            </div>
+            <span class="badge badge-visita">Visita</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--cs-surface2);border-radius:var(--radius-md);border:1px solid var(--cs-border);opacity:0.7;">
+            <input type="checkbox" checked style="width:16px;height:16px;cursor:pointer;">
+            <div style="flex:1;text-decoration:line-through;color:var(--cs-text-soft);">
+              <div style="font-size:13px;font-weight:600;">Enviar catálogo do Aurora Residence</div>
+              <div style="font-size:11px;margin-top:2px;">✓ Concluído · 15/04/2025</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB PROPOSTAS -->
+    <div class="tab-content" id="tab-propostas-lead">
+      <div style="padding:20px 24px;">
+        <div class="empty-state">
+          <div class="empty-icon">📄</div>
+          <div class="empty-title">Nenhuma proposta enviada ainda</div>
+          <div class="empty-sub">Quando uma proposta for gerada para este lead, ela aparecerá aqui.</div>
+          <button class="btn btn-gold btn-sm" style="margin-top:16px;">+ Gerar Proposta</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     EMPREENDIMENTOS
+════════════════════════════════════════════ -->
+<div class="page" id="page-empreendimentos">
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:24px;">
+
+    <div class="emp-card">
+      <div class="emp-cover emp-cover-aurora">
+        <span class="emp-logo-badge">Residencial</span>
+      </div>
+      <div class="emp-card-body">
+        <div class="emp-name">Aurora Residence</div>
+        <div class="emp-type">Residencial Premium · São Paulo</div>
+        <div style="margin-top:10px;font-size:12px;color:var(--cs-text-mid);">Apartamentos de 2 e 3 quartos com área de lazer completa. Entrega prevista: Dez/2026</div>
+        <div class="emp-stats">
+          <div>
+            <div class="emp-stat-label">Leads</div>
+            <div class="emp-stat-val">47</div>
+          </div>
+          <div>
+            <div class="emp-stat-label">Fechados</div>
+            <div class="emp-stat-val">7</div>
+          </div>
+          <div>
+            <div class="emp-stat-label">Conversão</div>
+            <div class="emp-stat-val">14,9%</div>
+          </div>
+        </div>
+        <div style="margin-top:12px;">
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--cs-text-soft);margin-bottom:4px;">
+            <span>Unidades vendidas</span><span>38 / 72</span>
+          </div>
+          <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:53%;"></div></div>
+        </div>
+        <button class="btn btn-outline btn-sm" style="margin-top:14px;width:100%;">Ver detalhes</button>
+      </div>
+    </div>
+
+    <div class="emp-card">
+      <div class="emp-cover emp-cover-florata">
+        <span class="emp-logo-badge">Premium</span>
+      </div>
+      <div class="emp-card-body">
+        <div class="emp-name">Florata Premium Residence</div>
+        <div class="emp-type">Alto Padrão · São Paulo</div>
+        <div style="margin-top:10px;font-size:12px;color:var(--cs-text-mid);">Apartamentos 3 e 4 suítes com rooftop exclusivo e concierge 24h. Entrega: Jun/2026</div>
+        <div class="emp-stats">
+          <div>
+            <div class="emp-stat-label">Leads</div>
+            <div class="emp-stat-val">52</div>
+          </div>
+          <div>
+            <div class="emp-stat-label">Fechados</div>
+            <div class="emp-stat-val">8</div>
+          </div>
+          <div>
+            <div class="emp-stat-label">Conversão</div>
+            <div class="emp-stat-val">15,4%</div>
+          </div>
+        </div>
+        <div style="margin-top:12px;">
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--cs-text-soft);margin-bottom:4px;">
+            <span>Unidades vendidas</span><span>21 / 48</span>
+          </div>
+          <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:44%;background:linear-gradient(90deg,#6B35C2,#8B55E2);"></div></div>
+        </div>
+        <button class="btn btn-outline btn-sm" style="margin-top:14px;width:100%;">Ver detalhes</button>
+      </div>
+    </div>
+
+    <div class="emp-card">
+      <div class="emp-cover emp-cover-house">
+        <span class="emp-logo-badge">Exclusivo</span>
+      </div>
+      <div class="emp-card-body">
+        <div class="emp-name">House Premium Residence</div>
+        <div class="emp-type">Casas de Alto Padrão · Alphaville</div>
+        <div style="margin-top:10px;font-size:12px;color:var(--cs-text-mid);">Casas 4 suítes com piscina privativa e garden. Condomínio fechado. Entrega: Mar/2027</div>
+        <div class="emp-stats">
+          <div>
+            <div class="emp-stat-label">Leads</div>
+            <div class="emp-stat-val">28</div>
+          </div>
+          <div>
+            <div class="emp-stat-label">Fechados</div>
+            <div class="emp-stat-val">3</div>
+          </div>
+          <div>
+            <div class="emp-stat-label">Conversão</div>
+            <div class="emp-stat-val">10,7%</div>
+          </div>
+        </div>
+        <div style="margin-top:12px;">
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--cs-text-soft);margin-bottom:4px;">
+            <span>Unidades vendidas</span><span>8 / 30</span>
+          </div>
+          <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:27%;background:linear-gradient(90deg,#1A5CB7,#2E7DD6);"></div></div>
+        </div>
+        <button class="btn btn-outline btn-sm" style="margin-top:14px;width:100%;">Ver detalhes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     AGENDA
+════════════════════════════════════════════ -->
+<div class="page" id="page-agenda">
+  <div style="display:flex;gap:20px;align-items:flex-start;">
+    <div style="flex:1;">
+      <div class="card">
+        <div class="card-header" style="padding-bottom:16px;">
+          <div class="card-title">Abril 2025</div>
+          <div class="flex-center gap-8">
+            <button class="icon-btn">←</button>
+            <button class="btn btn-gold btn-sm">+ Agendar</button>
+            <button class="icon-btn">→</button>
+          </div>
+        </div>
+        <div class="card-body" style="padding-top:0;">
+          <div class="agenda-day">
+            <div class="agenda-date-col">
+              <div class="agenda-day-num" style="color:var(--cs-gold-dark);">15</div>
+              <div class="agenda-day-name" style="color:var(--cs-gold);">HOJ</div>
+            </div>
+            <div class="agenda-events">
+              <div class="agenda-event" style="--event-color:#C9A84C;">
+                <div class="event-time">09:30</div>
+                <div>
+                  <div class="event-title">Follow-up · João Pereira</div>
+                  <div class="event-sub">Aurora Residence · Ligar</div>
+                </div>
+                <div class="event-lead-badge">Lucas Carvalho</div>
+              </div>
+              <div class="agenda-event" style="--event-color:#1A7CA8;">
+                <div class="event-time">14:00</div>
+                <div>
+                  <div class="event-title">Visita · Rafael Andrade</div>
+                  <div class="event-sub">Florata Premium · Decorado Apto 801</div>
+                </div>
+                <div class="event-lead-badge">Marcos Oliveira</div>
+              </div>
+              <div class="agenda-event" style="--event-color:#6B35C2;">
+                <div class="event-time">16:30</div>
+                <div>
+                  <div class="event-title">Proposta · Carlos Mendes</div>
+                  <div class="event-sub">Florata Premium · Google Meet</div>
+                </div>
+                <div class="event-lead-badge">Priscila Santos</div>
+              </div>
+            </div>
+          </div>
+          <div class="agenda-day">
+            <div class="agenda-date-col">
+              <div class="agenda-day-num">16</div>
+              <div class="agenda-day-name">QUA</div>
+            </div>
+            <div class="agenda-events">
+              <div class="agenda-event" style="--event-color:#C9A84C;">
+                <div class="event-time">10:00</div>
+                <div>
+                  <div class="event-title">Follow-up · Fernanda Lima</div>
+                  <div class="event-sub">Aurora Residence · WhatsApp</div>
+                </div>
+                <div class="event-lead-badge">Priscila Santos</div>
+              </div>
+            </div>
+          </div>
+          <div class="agenda-day">
+            <div class="agenda-date-col">
+              <div class="agenda-day-num">17</div>
+              <div class="agenda-day-name">QUI</div>
+            </div>
+            <div class="agenda-events">
+              <div class="agenda-event" style="--event-color:#1A7CA8;">
+                <div class="event-time">11:00</div>
+                <div>
+                  <div class="event-title">Visita · Sandra Alves</div>
+                  <div class="event-sub">Aurora Residence · Decorado</div>
+                </div>
+                <div class="event-lead-badge">Ana Vieira</div>
+              </div>
+              <div class="agenda-event" style="--event-color:#1A7F5A;">
+                <div class="event-time">15:30</div>
+                <div>
+                  <div class="event-title">Assinatura · André Figueiredo</div>
+                  <div class="event-sub">Florata Premium · Escritório CS</div>
+                </div>
+                <div class="event-lead-badge">Marcos Oliveira</div>
+              </div>
+            </div>
+          </div>
+          <div class="agenda-day">
+            <div class="agenda-date-col">
+              <div class="agenda-day-num">18</div>
+              <div class="agenda-day-name">SEX</div>
+            </div>
+            <div class="agenda-events">
+              <div style="padding:20px;text-align:center;color:var(--cs-text-soft);font-size:13px;">Nenhum evento agendado</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- MINI CALENDAR -->
+    <div class="card" style="width:280px;flex-shrink:0;">
+      <div class="card-header">
+        <div class="card-title">Resumo</div>
+      </div>
+      <div class="card-body">
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div style="background:var(--cs-blue-bg);border-radius:var(--radius-md);padding:14px;display:flex;align-items:center;gap:12px;">
+            <div style="font-family:'Sora',sans-serif;font-size:28px;font-weight:700;color:var(--cs-blue);">3</div>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--cs-blue);">Eventos hoje</div>
+              <div style="font-size:11px;color:var(--cs-text-soft);">1 visita · 2 follow-ups</div>
+            </div>
+          </div>
+          <div style="background:var(--cs-green-bg);border-radius:var(--radius-md);padding:14px;display:flex;align-items:center;gap:12px;">
+            <div style="font-family:'Sora',sans-serif;font-size:28px;font-weight:700;color:var(--cs-green);">5</div>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--cs-green);">Esta semana</div>
+              <div style="font-size:11px;color:var(--cs-text-soft);">2 visitas · 3 follow-ups</div>
+            </div>
+          </div>
+          <div style="background:var(--cs-amber-bg);border-radius:var(--radius-md);padding:14px;display:flex;align-items:center;gap:12px;">
+            <div style="font-family:'Sora',sans-serif;font-size:28px;font-weight:700;color:var(--cs-amber);">2</div>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--cs-amber);">Vencendo hoje</div>
+              <div style="font-size:11px;color:var(--cs-text-soft);">Tarefas com prazo hoje</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     TAREFAS
+════════════════════════════════════════════ -->
+<div class="page" id="page-tarefas">
+  <div class="card">
+    <div class="filter-bar">
+      <select class="filter-select">
+        <option>Todas as tarefas</option>
+        <option>Pendentes</option>
+        <option>Concluídas</option>
+        <option>Vencidas</option>
+      </select>
+      <select class="filter-select">
+        <option>Todos os responsáveis</option>
+        <option>Priscila Santos</option>
+        <option>Marcos Oliveira</option>
+        <option>Ana Vieira</option>
+      </select>
+      <button class="btn btn-gold btn-sm ml-auto">+ Nova Tarefa</button>
+    </div>
+    <div style="padding:16px 22px;display:flex;flex-direction:column;gap:8px;">
+      <div style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--cs-amber-bg);border-radius:var(--radius-md);border:1px solid rgba(183,119,13,0.2);">
+        <input type="checkbox" style="width:16px;height:16px;cursor:pointer;flex-shrink:0;">
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:600;">Follow-up com João Pereira — ligar às 09:30</div>
+          <div style="font-size:11px;color:var(--cs-amber);margin-top:3px;">⏰ Hoje, 09:30 · Aurora Residence</div>
+        </div>
+        <span class="badge badge-atendimento">Urgente</span>
+        <div class="avatar" style="width:26px;height:26px;font-size:9px;background:var(--cs-blue-bg);color:var(--cs-blue);">LC</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--cs-amber-bg);border-radius:var(--radius-md);border:1px solid rgba(183,119,13,0.2);">
+        <input type="checkbox" style="width:16px;height:16px;cursor:pointer;flex-shrink:0;">
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:600;">Follow-up Fernanda Lima — confirmar visita</div>
+          <div style="font-size:11px;color:var(--cs-amber);margin-top:3px;">⏰ Hoje, 16:00 · Aurora Residence</div>
+        </div>
+        <span class="badge badge-atendimento">Urgente</span>
+        <div class="avatar" style="width:26px;height:26px;font-size:9px;background:var(--cs-amber-bg);color:var(--cs-amber);">PS</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--cs-surface2);border-radius:var(--radius-md);border:1px solid var(--cs-border);">
+        <input type="checkbox" style="width:16px;height:16px;cursor:pointer;flex-shrink:0;">
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:600;">Preparar proposta para Carlos Mendes</div>
+          <div style="font-size:11px;color:var(--cs-text-soft);margin-top:3px;">📅 16/04 · Florata Premium</div>
+        </div>
+        <span class="badge badge-proposta">Proposta</span>
+        <div class="avatar" style="width:26px;height:26px;font-size:9px;background:var(--cs-amber-bg);color:var(--cs-amber);">PS</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--cs-surface2);border-radius:var(--radius-md);border:1px solid var(--cs-border);">
+        <input type="checkbox" style="width:16px;height:16px;cursor:pointer;flex-shrink:0;">
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:600;">Agendar visita Sandra Alves — Apto decorado</div>
+          <div style="font-size:11px;color:var(--cs-text-soft);margin-top:3px;">📅 17/04 · Aurora Residence</div>
+        </div>
+        <span class="badge badge-visita">Visita</span>
+        <div class="avatar" style="width:26px;height:26px;font-size:9px;background:var(--cs-purple-bg);color:var(--cs-purple);">AV</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--cs-surface2);border-radius:var(--radius-md);border:1px solid var(--cs-border);opacity:0.7;">
+        <input type="checkbox" checked style="width:16px;height:16px;cursor:pointer;flex-shrink:0;">
+        <div style="flex:1;text-decoration:line-through;color:var(--cs-text-soft);">
+          <div style="font-size:13px;font-weight:600;">Enviar catálogo Aurora Residence para Fernanda Lima</div>
+          <div style="font-size:11px;margin-top:3px;">✓ Concluído — 15/04 às 10:23</div>
+        </div>
+        <div class="avatar" style="width:26px;height:26px;font-size:9px;background:var(--cs-amber-bg);color:var(--cs-amber);">PS</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     PROPOSTAS
+════════════════════════════════════════════ -->
+<div class="page" id="page-propostas">
+  <div class="card">
+    <div class="filter-bar">
+      <select class="filter-select">
+        <option>Todos os status</option>
+        <option>Em aberto</option>
+        <option>Aceita</option>
+        <option>Recusada</option>
+        <option>Expirada</option>
+      </select>
+      <select class="filter-select">
+        <option>Todos os empreendimentos</option>
+        <option>Aurora Residence</option>
+        <option>Florata Premium</option>
+        <option>House Premium</option>
+      </select>
+      <button class="btn btn-gold btn-sm ml-auto">+ Nova Proposta</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Cliente</th>
+            <th>Empreendimento</th>
+            <th>Unidade</th>
+            <th>Valor</th>
+            <th>Corretor</th>
+            <th>Data</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="color:var(--cs-text-soft);">#001</td>
+            <td>Carlos Mendes</td>
+            <td>Florata Premium</td>
+            <td>Apto 3 suítes - 801</td>
+            <td style="font-weight:700;color:var(--cs-green);">R$ 820.000</td>
+            <td>Priscila Santos</td>
+            <td>14/04/2025</td>
+            <td><span class="badge badge-atendimento">Em aberto</span></td>
+            <td><button class="btn btn-outline btn-sm">Ver</button></td>
+          </tr>
+          <tr>
+            <td style="color:var(--cs-text-soft);">#002</td>
+            <td>Mariana Costa</td>
+            <td>House Premium</td>
+            <td>Casa 4 suítes - L12</td>
+            <td style="font-weight:700;color:var(--cs-green);">R$ 1.250.000</td>
+            <td>Ana Vieira</td>
+            <td>10/04/2025</td>
+            <td><span class="badge badge-negociacao">Em negociação</span></td>
+            <td><button class="btn btn-outline btn-sm">Ver</button></td>
+          </tr>
+          <tr>
+            <td style="color:var(--cs-text-soft);">#003</td>
+            <td>André Figueiredo</td>
+            <td>Florata Premium</td>
+            <td>Apto 3 suítes - 801</td>
+            <td style="font-weight:700;color:var(--cs-green);">R$ 890.000</td>
+            <td>Marcos Oliveira</td>
+            <td>01/04/2025</td>
+            <td><span class="badge badge-fechado">Aceita ✓</span></td>
+            <td><button class="btn btn-outline btn-sm">Ver</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     RELATÓRIOS
+════════════════════════════════════════════ -->
+<div class="page" id="page-relatorios">
+  <div class="stats-grid" style="margin-bottom:24px;">
+    <div class="stat-card" style="--accent:var(--cs-gold);">
+      <div class="stat-label">Total de Leads (mês)</div>
+      <div class="stat-value">127</div>
+      <div class="stat-trend up">↑ +14%</div>
+    </div>
+    <div class="stat-card" style="--accent:var(--cs-green);">
+      <div class="stat-label">Fechamentos</div>
+      <div class="stat-value">18</div>
+      <div class="stat-trend up">↑ +20%</div>
+    </div>
+    <div class="stat-card" style="--accent:var(--cs-blue);">
+      <div class="stat-label">Visitas realizadas</div>
+      <div class="stat-value">43</div>
+      <div class="stat-trend up">↑ +8%</div>
+    </div>
+    <div class="stat-card" style="--accent:var(--cs-red);">
+      <div class="stat-label">Perdas</div>
+      <div class="stat-value">12</div>
+      <div class="stat-trend down">↑ +2 vs anterior</div>
+    </div>
+  </div>
+
+  <div class="section-row">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Conversão por Empreendimento</div>
+      </div>
+      <div class="card-body">
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+              <span style="font-size:13px;font-weight:600;">Aurora Residence</span>
+              <span style="font-size:13px;font-weight:700;color:var(--cs-green);">14,9%</span>
+            </div>
+            <div class="progress-bar-wrap" style="height:10px;"><div class="progress-bar-fill" style="width:74%;"></div></div>
+            <div style="font-size:11px;color:var(--cs-text-soft);margin-top:4px;">47 leads → 7 fechamentos</div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+              <span style="font-size:13px;font-weight:600;">Florata Premium</span>
+              <span style="font-size:13px;font-weight:700;color:var(--cs-green);">15,4%</span>
+            </div>
+            <div class="progress-bar-wrap" style="height:10px;"><div class="progress-bar-fill" style="width:77%;background:linear-gradient(90deg,#6B35C2,#8B55E2);"></div></div>
+            <div style="font-size:11px;color:var(--cs-text-soft);margin-top:4px;">52 leads → 8 fechamentos</div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+              <span style="font-size:13px;font-weight:600;">House Premium</span>
+              <span style="font-size:13px;font-weight:700;color:var(--cs-amber);">10,7%</span>
+            </div>
+            <div class="progress-bar-wrap" style="height:10px;"><div class="progress-bar-fill" style="width:54%;background:linear-gradient(90deg,#1A5CB7,#2E7DD6);"></div></div>
+            <div style="font-size:11px;color:var(--cs-text-soft);margin-top:4px;">28 leads → 3 fechamentos</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Origem dos Leads</div>
+      </div>
+      <div class="card-body">
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:10px;height:10px;border-radius:50%;background:#E1306C;flex-shrink:0;"></div>
+            <span style="font-size:13px;flex:1;">Instagram Ads</span>
+            <div style="flex:2;background:var(--cs-bg);border-radius:20px;height:8px;overflow:hidden;">
+              <div style="width:42%;height:100%;background:#E1306C;border-radius:20px;"></div>
+            </div>
+            <span style="font-size:12px;font-weight:600;width:30px;text-align:right;">42%</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:10px;height:10px;border-radius:50%;background:#4285F4;flex-shrink:0;"></div>
+            <span style="font-size:13px;flex:1;">Google Ads</span>
+            <div style="flex:2;background:var(--cs-bg);border-radius:20px;height:8px;overflow:hidden;">
+              <div style="width:28%;height:100%;background:#4285F4;border-radius:20px;"></div>
+            </div>
+            <span style="font-size:12px;font-weight:600;width:30px;text-align:right;">28%</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:10px;height:10px;border-radius:50%;background:#4267B2;flex-shrink:0;"></div>
+            <span style="font-size:13px;flex:1;">Facebook Ads</span>
+            <div style="flex:2;background:var(--cs-bg);border-radius:20px;height:8px;overflow:hidden;">
+              <div style="width:18%;height:100%;background:#4267B2;border-radius:20px;"></div>
+            </div>
+            <span style="font-size:12px;font-weight:600;width:30px;text-align:right;">18%</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:10px;height:10px;border-radius:50%;background:var(--cs-gold);flex-shrink:0;"></div>
+            <span style="font-size:13px;flex:1;">Indicações</span>
+            <div style="flex:2;background:var(--cs-bg);border-radius:20px;height:8px;overflow:hidden;">
+              <div style="width:12%;height:100%;background:var(--cs-gold);border-radius:20px;"></div>
+            </div>
+            <span style="font-size:12px;font-weight:600;width:30px;text-align:right;">12%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">Motivos de Perda</div>
+      <button class="btn btn-outline btn-sm">Exportar</button>
+    </div>
+    <div class="card-body">
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;">
+        <div style="text-align:center;padding:16px;background:var(--cs-red-bg);border-radius:var(--radius-md);">
+          <div style="font-size:24px;font-weight:700;color:var(--cs-red);font-family:'Sora',sans-serif;">4</div>
+          <div style="font-size:12px;color:var(--cs-text-mid);margin-top:4px;">Preço fora do orçamento</div>
+        </div>
+        <div style="text-align:center;padding:16px;background:var(--cs-amber-bg);border-radius:var(--radius-md);">
+          <div style="font-size:24px;font-weight:700;color:var(--cs-amber);font-family:'Sora',sans-serif;">3</div>
+          <div style="font-size:12px;color:var(--cs-text-mid);margin-top:4px;">Financiamento negado</div>
+        </div>
+        <div style="text-align:center;padding:16px;background:var(--cs-blue-bg);border-radius:var(--radius-md);">
+          <div style="font-size:24px;font-weight:700;color:var(--cs-blue);font-family:'Sora',sans-serif;">3</div>
+          <div style="font-size:12px;color:var(--cs-text-mid);margin-top:4px;">Optou por concorrente</div>
+        </div>
+        <div style="text-align:center;padding:16px;background:var(--cs-bg);border-radius:var(--radius-md);">
+          <div style="font-size:24px;font-weight:700;color:var(--cs-text-mid);font-family:'Sora',sans-serif;">2</div>
+          <div style="font-size:12px;color:var(--cs-text-mid);margin-top:4px;">Sem retorno do cliente</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     USUÁRIOS
+════════════════════════════════════════════ -->
+<div class="page" id="page-usuarios">
+  <div class="card">
+    <div class="filter-bar">
+      <select class="filter-select"><option>Todos os perfis</option><option>Gerente</option><option>Corretor</option><option>Atendente</option></select>
+      <button class="btn btn-gold btn-sm ml-auto">+ Novo Usuário</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Usuário</th><th>Perfil</th><th>Leads ativos</th><th>Fechamentos</th><th>Status</th><th></th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="flex-center gap-10"><div class="avatar" style="background:var(--cs-bg);color:var(--cs-navy);width:32px;height:32px;font-size:11px;">LC</div><div><div>Lucas Carvalho</div><div style="font-size:11px;color:var(--cs-text-soft);"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="076b72646674476474626a7775626269636e6a62697368742964686a296575">[email&#160;protected]</a></div></div></div></td>
+            <td><span class="badge badge-novo">Gerente</span></td>
+            <td>18</td>
+            <td>3</td>
+            <td><span class="badge badge-proposta">Ativo</span></td>
+            <td><button class="btn btn-outline btn-sm">Editar</button></td>
+          </tr>
+          <tr>
+            <td><div class="flex-center gap-10"><div class="avatar" style="background:var(--cs-amber-bg);color:var(--cs-amber);width:32px;height:32px;font-size:11px;">PS</div><div><div>Priscila Santos</div><div style="font-size:11px;color:var(--cs-text-soft);"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3444465d47575d58557457475159444651515a505d59515a405b471a575b591a5646">[email&#160;protected]</a></div></div></div></td>
+            <td><span class="badge badge-qualificado">Corretor</span></td>
+            <td>32</td>
+            <td>6</td>
+            <td><span class="badge badge-proposta">Ativo</span></td>
+            <td><button class="btn btn-outline btn-sm">Editar</button></td>
+          </tr>
+          <tr>
+            <td><div class="flex-center gap-10"><div class="avatar" style="background:var(--cs-blue-bg);color:var(--cs-blue);width:32px;height:32px;font-size:11px;">MO</div><div><div>Marcos Oliveira</div><div style="font-size:11px;color:var(--cs-text-soft);"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2b464a594844586b48584e465b594e4e454f42464e455f445805484446054959">[email&#160;protected]</a></div></div></div></td>
+            <td><span class="badge badge-qualificado">Corretor</span></td>
+            <td>27</td>
+            <td>5</td>
+            <td><span class="badge badge-proposta">Ativo</span></td>
+            <td><button class="btn btn-outline btn-sm">Editar</button></td>
+          </tr>
+          <tr>
+            <td><div class="flex-center gap-10"><div class="avatar" style="background:var(--cs-purple-bg);color:var(--cs-purple);width:32px;height:32px;font-size:11px;">AV</div><div><div>Ana Vieira</div><div style="font-size:11px;color:var(--cs-text-soft);"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e2838c83a28191878f929087878c868b8f878c968d91cc818d8fcc8090">[email&#160;protected]</a></div></div></div></td>
+            <td><span class="badge badge-qualificado">Corretor</span></td>
+            <td>22</td>
+            <td>4</td>
+            <td><span class="badge badge-proposta">Ativo</span></td>
+            <td><button class="btn btn-outline btn-sm">Editar</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     CONFIGURAÇÕES
+════════════════════════════════════════════ -->
+<div class="page" id="page-configuracoes">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+    <div class="card">
+      <div class="card-header"><div class="card-title">Dados da empresa</div></div>
+      <div class="card-body">
+        <div class="form-group" style="margin-bottom:12px;">
+          <label class="form-label">Nome da empresa</label>
+          <input class="form-input" value="CS Empreendimentos">
+        </div>
+        <div class="form-group" style="margin-bottom:12px;">
+          <label class="form-label">CNPJ</label>
+          <input class="form-input" value="12.345.678/0001-99">
+        </div>
+        <div class="form-group" style="margin-bottom:16px;">
+          <label class="form-label">Telefone comercial</label>
+          <input class="form-input" value="(11) 3456-7890">
+        </div>
+        <button class="btn btn-primary">Salvar alterações</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Etapas do funil</div></div>
+      <div class="card-body">
+        <div style="font-size:13px;color:var(--cs-text-mid);margin-bottom:14px;">Configure as etapas do funil de vendas</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div class="flex-center gap-10" style="padding:10px;background:var(--cs-surface2);border-radius:var(--radius-sm);">
+            <span style="color:var(--cs-text-soft);cursor:grab;">⠿</span>
+            <span style="flex:1;font-size:13px;">Novo Lead</span>
+            <button class="btn btn-ghost btn-sm" style="padding:4px 8px;">✏️</button>
+          </div>
+          <div class="flex-center gap-10" style="padding:10px;background:var(--cs-surface2);border-radius:var(--radius-sm);">
+            <span style="color:var(--cs-text-soft);cursor:grab;">⠿</span>
+            <span style="flex:1;font-size:13px;">Em Atendimento</span>
+            <button class="btn btn-ghost btn-sm" style="padding:4px 8px;">✏️</button>
+          </div>
+          <div class="flex-center gap-10" style="padding:10px;background:var(--cs-surface2);border-radius:var(--radius-sm);">
+            <span style="color:var(--cs-text-soft);cursor:grab;">⠿</span>
+            <span style="flex:1;font-size:13px;">Qualificado</span>
+            <button class="btn btn-ghost btn-sm" style="padding:4px 8px;">✏️</button>
+          </div>
+          <div class="flex-center gap-10" style="padding:10px;background:var(--cs-surface2);border-radius:var(--radius-sm);">
+            <span style="color:var(--cs-text-soft);cursor:grab;">⠿</span>
+            <span style="flex:1;font-size:13px;">Visita Agendada</span>
+            <button class="btn btn-ghost btn-sm" style="padding:4px 8px;">✏️</button>
+          </div>
+        </div>
+        <button class="btn btn-outline btn-sm" style="margin-top:12px;">+ Adicionar etapa</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end main -->
+</div><!-- end app -->
+
+<!-- ════════════════════════════════════════════
+     MODALS
+════════════════════════════════════════════ -->
+
+<!-- MODAL NOVO LEAD -->
+<div class="modal-overlay" id="modal-novo-lead">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Cadastrar Novo Lead</div>
+      <button class="close-btn" onclick="closeModal('modal-novo-lead')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-section-title">📋 Dados Pessoais</div>
+        <div class="form-group">
+          <label class="form-label">Nome completo *</label>
+          <input class="form-input" placeholder="Ex: João da Silva">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Telefone / WhatsApp *</label>
+          <input class="form-input" placeholder="(11) 9 9999-9999">
+        </div>
+        <div class="form-group">
+          <label class="form-label">E-mail</label>
+          <input class="form-input" placeholder="email@exemplo.com" type="email">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Cidade</label>
+          <input class="form-input" placeholder="Ex: São Paulo - SP">
+        </div>
+
+        <div class="form-section-title">🏢 Interesse</div>
+        <div class="form-group">
+          <label class="form-label">Empreendimento *</label>
+          <select class="form-select">
+            <option value="">Selecione...</option>
+            <option>Aurora Residence</option>
+            <option>Florata Premium Residence</option>
+            <option>House Premium Residence</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tipo de unidade</label>
+          <select class="form-select">
+            <option>2 quartos</option>
+            <option>3 quartos</option>
+            <option>3 suítes</option>
+            <option>4 suítes</option>
+            <option>Casa</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Faixa de valor</label>
+          <select class="form-select">
+            <option>Até R$ 400k</option>
+            <option>R$ 400k – R$ 600k</option>
+            <option>R$ 600k – R$ 800k</option>
+            <option>R$ 800k – R$ 1M</option>
+            <option>Acima de R$ 1M</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Objetivo da compra</label>
+          <select class="form-select">
+            <option>Moradia própria</option>
+            <option>Investimento</option>
+            <option>Moradia familiar</option>
+            <option>Segunda residência</option>
+          </select>
+        </div>
+
+        <div class="form-section-title">💰 Financeiro</div>
+        <div class="form-group">
+          <label class="form-label">Renda familiar</label>
+          <input class="form-input" placeholder="Ex: R$ 8.000">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Valor de entrada disponível</label>
+          <input class="form-input" placeholder="Ex: R$ 80.000">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Financiamento aprovado?</label>
+          <select class="form-select">
+            <option>Não verificado</option>
+            <option>Sim, aprovado</option>
+            <option>Não</option>
+            <option>Em análise</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Prazo de compra</label>
+          <select class="form-select">
+            <option>Imediato</option>
+            <option>3 meses</option>
+            <option>6 meses</option>
+            <option>1 ano</option>
+            <option>Sem prazo definido</option>
+          </select>
+        </div>
+
+        <div class="form-section-title">📊 Comercial</div>
+        <div class="form-group">
+          <label class="form-label">Origem do lead *</label>
+          <select class="form-select">
+            <option>Instagram Ads</option>
+            <option>Google Ads</option>
+            <option>Facebook Ads</option>
+            <option>Indicação</option>
+            <option>Portal Imobiliário</option>
+            <option>Site</option>
+            <option>Evento / Stand</option>
+            <option>Outros</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Corretor responsável</label>
+          <select class="form-select">
+            <option>Distribuir automaticamente</option>
+            <option>Priscila Santos</option>
+            <option>Marcos Oliveira</option>
+            <option>Ana Vieira</option>
+            <option>Lucas Carvalho</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Temperatura</label>
+          <select class="form-select">
+            <option>🔥 Quente</option>
+            <option>🟡 Morno</option>
+            <option>🔵 Frio</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nível de interesse</label>
+          <select class="form-select">
+            <option>★★★★★ Muito alto</option>
+            <option>★★★★☆ Alto</option>
+            <option>★★★☆☆ Médio</option>
+            <option>★★☆☆☆ Baixo</option>
+            <option>★☆☆☆☆ Muito baixo</option>
+          </select>
+        </div>
+
+        <div class="form-group full">
+          <label class="form-label">Observações internas</label>
+          <textarea class="form-textarea" placeholder="Anotações sobre o lead, contexto da conversa, preferências..."></textarea>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Próxima ação</label>
+          <input class="form-input" placeholder="Ex: Ligar amanhã às 10h para apresentar o empreendimento">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-novo-lead')">Cancelar</button>
+      <button class="btn btn-gold" onclick="closeModal('modal-novo-lead')">Cadastrar Lead</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL NOVA INTERAÇÃO -->
+<div class="modal-overlay" id="modal-nova-interacao">
+  <div class="modal" style="max-width:520px;">
+    <div class="modal-header">
+      <div class="modal-title">Registrar Interação</div>
+      <button class="close-btn" onclick="closeModal('modal-nova-interacao')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Tipo de interação</label>
+          <select class="form-select">
+            <option>📞 Ligação telefônica</option>
+            <option>📱 WhatsApp</option>
+            <option>✉️ E-mail</option>
+            <option>🏠 Visita ao decorado</option>
+            <option>📝 Reunião</option>
+            <option>📄 Proposta enviada</option>
+            <option>🤝 Outro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Data e hora</label>
+          <input class="form-input" type="datetime-local" value="2025-04-15T10:30">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Resultado</label>
+          <select class="form-select">
+            <option>Contato realizado com sucesso</option>
+            <option>Não atendeu</option>
+            <option>Caixa postal</option>
+            <option>Agendou retorno</option>
+            <option>Demonstrou interesse</option>
+            <option>Pediu mais informações</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Mover para etapa</label>
+          <select class="form-select">
+            <option>Manter na etapa atual</option>
+            <option>Em Atendimento</option>
+            <option>Qualificado</option>
+            <option>Aguardando Retorno</option>
+            <option>Visita Agendada</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Descrição da interação</label>
+          <textarea class="form-textarea" placeholder="Descreva o que aconteceu na interação..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Próxima ação</label>
+          <input class="form-input" placeholder="O que fazer em seguida?">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Data do próximo follow-up</label>
+          <input class="form-input" type="date">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-nova-interacao')">Cancelar</button>
+      <button class="btn btn-gold" onclick="closeModal('modal-nova-interacao')">Salvar Interação</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════
+   CS CRM — SCRIPT COMPLETO CORRIGIDO v2
+   Correções: Drag-and-drop Kanban, busca, checkboxes,
+   WhatsApp funcional, toast, formulários, tabs, modals
+═══════════════════════════════════════════════ */
+
+// ─── ÍCONE WPP SVG ───────────────────────────
+const WPP_SVG = `<svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>`;
+
+// ─── DADOS DOS LEADS (estado mutável) ────────
+const ETAPAS = [
+  { id:'novo',        label:'🆕 Novo Lead'       },
+  { id:'atendimento', label:'📞 Em Atendimento'  },
+  { id:'qualificado', label:'✅ Qualificado'      },
+  { id:'aguardando',  label:'⏸ Ag. Retorno'      },
+  { id:'visita',      label:'📍 Visita Agendada' },
+  { id:'visitou',     label:'🏠 Visitou'          },
+  { id:'proposta',    label:'📄 Proposta Enviada'},
+  { id:'negociacao',  label:'🤝 Em Negociação'   },
+  { id:'fechado',     label:'🏆 Fechado'          },
+  { id:'perdido',     label:'❌ Perdido'          },
+];
+
+let leadsState = [
+  { id:1,  nome:'Fernanda Lima',    tel:'11987654321', emp:'Aurora Residence',  etapa:'novo',        temp:'quente', corretor:'Priscila Santos', origem:'Instagram', data:'Hoje'  },
+  { id:2,  nome:'Beatriz Rocha',    tel:'41965432109', emp:'House Premium',     etapa:'novo',        temp:'morno',  corretor:'Lucas Carvalho',  origem:'Facebook',  data:'Ontem' },
+  { id:3,  nome:'Paulo Henrique',   tel:'62954321098', emp:'Florata Premium',   etapa:'novo',        temp:'frio',   corretor:'Ana Vieira',      origem:'Google',    data:'2d'    },
+  { id:4,  nome:'Luíza Ferreira',   tel:'71943210987', emp:'Aurora Residence',  etapa:'atendimento', temp:'quente', corretor:'Priscila Santos', origem:'Instagram', data:'Ontem', extra:'📞 2 contatos feitos' },
+  { id:5,  nome:'Rodrigo Neves',    tel:'81932109876', emp:'Florata Premium',   etapa:'atendimento', temp:'morno',  corretor:'Marcos Oliveira', origem:'Google',    data:'2d',    extra:'📞 1 contato feito'  },
+  { id:6,  nome:'Sandra Alves',     tel:'91921098765', emp:'Aurora Residence',  etapa:'qualificado', temp:'quente', corretor:'Ana Vieira',      origem:'Indicação', data:'3d',    extra:'💰 R$ 650k · Financia', extracor:'#1A7F5A' },
+  { id:7,  nome:'João Pereira',     tel:'85978901234', emp:'Aurora Residence',  etapa:'aguardando',  temp:'frio',   corretor:'Lucas Carvalho',  origem:'Portal',    data:'3d'    },
+  { id:8,  nome:'Rafael Andrade',   tel:'21998765432', emp:'Florata Premium',   etapa:'visita',      temp:'quente', corretor:'Marcos Oliveira', origem:'Indicação', data:'Hoje',  extra:'📅 Hoje, 14:00', extracor:'#1A7CA8', borda:'#1A7CA8' },
+  { id:9,  nome:'Carlos Mendes',    tel:'31976543210', emp:'Florata Premium',   etapa:'proposta',    temp:'quente', corretor:'Priscila Santos', origem:'Google',    data:'Hoje',  extra:'💰 Apto 3 suítes · R$820k', extracor:'#1A7F5A', borda:'#1A7F5A' },
+  { id:10, nome:'Mariana Costa',    tel:'51989012345', emp:'House Premium',     etapa:'negociacao',  temp:'morno',  corretor:'Ana Vieira',      origem:'Facebook',  data:'Ontem', extra:'⏳ Aguarda financiamento', extracor:'#B35F0A', borda:'#B35F0A' },
+  { id:11, nome:'André Figueiredo', tel:'11912345678', emp:'Florata Premium',   etapa:'fechado',     temp:'quente', corretor:'Marcos Oliveira', origem:'Indicação', data:'12/04', extra:'💰 Apto 801 · R$ 890k', extracor:'#1A7F5A', borda:'#1A7F5A' },
+];
+
+// ─── ESTILOS DINÂMICOS ───────────────────────
+(function injectStyles() {
+  const s = document.createElement('style');
+  s.textContent = `
+    @keyframes toastIn { from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1} }
+    @keyframes toastOut { to{transform:translateY(10px);opacity:0} }
+    .cs-toast { animation: toastIn .25s ease forwards; }
+    .kanban-col-body.drag-over {
+      background: rgba(201,168,76,0.09) !important;
+      border: 2px dashed var(--cs-gold) !important;
+      border-radius: var(--radius-md);
+    }
+    .lead-card[draggable="true"] { user-select:none; }
+    .lead-card[draggable="true"]:hover { cursor:grab; }
+    .lead-card.dragging { opacity:.35 !important; transform:rotate(1deg); }
+    .kanban-drop-zone {
+      min-height:60px; border-radius:var(--radius-md);
+      display:flex; align-items:center; justify-content:center;
+      font-size:11px; color:var(--cs-gold-dark); font-weight:600;
+      border:2px dashed transparent; transition:all .15s;
+    }
+    .kanban-col-body.drag-over .kanban-drop-zone {
+      border-color:var(--cs-gold); background:rgba(201,168,76,0.06);
+    }
+    .task-row { transition: opacity .2s; }
+    .task-row.done { opacity:.55; }
+    .task-row.done .task-title { text-decoration:line-through; color:var(--cs-text-soft); }
+    input[type=checkbox] { accent-color: var(--cs-navy); cursor:pointer; }
+  `;
+  document.head.appendChild(s);
+})();
+
+// ─── TOAST ───────────────────────────────────
+function toast(msg, tipo) {
+  const old = document.querySelector('.cs-toast');
+  if (old) { old.style.animation='toastOut .2s forwards'; setTimeout(()=>old.remove(),200); }
+  const colors = { success:'#1A7F5A', error:'#C0392B', info:'#1A5CB7', warning:'#B7770D' };
+  const bg = colors[tipo] || colors.success;
+  const t = document.createElement('div');
+  t.className = 'cs-toast';
+  t.innerHTML = msg;
+  Object.assign(t.style, {
+    position:'fixed', bottom:'28px', right:'28px', zIndex:'9999',
+    background:bg, color:'white', padding:'12px 20px',
+    borderRadius:'10px', fontSize:'13px', fontWeight:'500',
+    boxShadow:'0 8px 28px rgba(0,0,0,.2)', maxWidth:'320px',
+    fontFamily:"'DM Sans',sans-serif", lineHeight:'1.4'
+  });
+  document.body.appendChild(t);
+  setTimeout(() => { t.style.animation='toastOut .3s forwards'; setTimeout(()=>t.remove(),300); }, 3000);
+}
+
+// ─── NAVEGAÇÃO ───────────────────────────────
+const PAGE_META = {
+  'dashboard':      { title:'Dashboard',         sub:'Visão geral comercial · Abril 2025' },
+  'leads':          { title:'Leads',             sub:'127 leads ativos no sistema' },
+  'kanban':         { title:'Funil Kanban',       sub:'Arraste os cards entre as etapas do funil' },
+  'empreendimentos':{ title:'Empreendimentos',   sub:'3 empreendimentos ativos' },
+  'agenda':         { title:'Agenda',            sub:'Visitas e follow-ups programados' },
+  'tarefas':        { title:'Tarefas',           sub:'Suas tarefas pendentes' },
+  'propostas':      { title:'Propostas',         sub:'3 propostas comerciais' },
+  'relatorios':     { title:'Relatórios',        sub:'Análise comercial · Abril 2025' },
+  'usuarios':       { title:'Usuários',          sub:'4 usuários cadastrados' },
+  'configuracoes':  { title:'Configurações',     sub:'Configurações do sistema' },
+  'lead-detail':    { title:'Fernanda Lima',     sub:'Novo Lead · Aurora Residence' },
+};
+
+function nav(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const pageEl = document.getElementById('page-' + page);
+  if (pageEl) { pageEl.classList.add('active'); }
+  const navEl = document.querySelector(`.nav-item[onclick="nav('${page}')"]`);
+  if (navEl) navEl.classList.add('active');
+  const meta = PAGE_META[page] || { title:page, sub:'' };
+  document.getElementById('topbar-title').textContent = meta.title;
+  document.getElementById('topbar-sub').textContent = meta.sub;
+  // Render dinâmico por página
+  if (page === 'kanban') setTimeout(renderKanban, 0);
+  if (page === 'leads')  setTimeout(() => renderLeadsTable(), 0);
+  // Scroll to top
+  window.scrollTo(0,0);
+}
+
+// ─── LOGIN ───────────────────────────────────
+function doLogin() {
+  const lp = document.getElementById('login-page');
+  lp.style.transition = 'opacity .4s ease';
+  lp.style.opacity = '0';
+  setTimeout(() => {
+    lp.style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+    setTimeout(animateFunnelBars, 500);
+  }, 400);
+}
+window.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('#login-page input').forEach(inp =>
+    inp.addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); })
+  );
+});
+
+// ─── MODAIS ──────────────────────────────────
+function openModal(id) {
+  const m = document.getElementById(id);
+  if (m) { m.classList.add('open'); setTimeout(()=>m.querySelector('input,select,textarea')?.focus(),100); }
+}
+function closeModal(id) {
+  const m = document.getElementById(id);
+  if (m) m.classList.remove('open');
+}
+window.addEventListener('click', e => {
+  if (e.target.classList.contains('modal-overlay')) e.target.classList.remove('open');
+});
+window.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
+    const np = document.getElementById('notif-panel');
+    if (np) np.classList.remove('open');
+  }
+});
+
+// ─── NOTIFICAÇÕES ────────────────────────────
+function toggleNotif(e) {
+  if (e) e.stopPropagation();
+  document.getElementById('notif-panel').classList.toggle('open');
+}
+window.addEventListener('click', e => {
+  const panel = document.getElementById('notif-panel');
+  if (panel?.classList.contains('open') && !e.target.closest('.icon-btn') && !e.target.closest('#notif-panel')) {
+    panel.classList.remove('open');
+  }
+});
+window.addEventListener('DOMContentLoaded', () => {
+  // Marcar todas como lidas
+  const markAll = document.querySelector('.notif-header span:last-child');
+  if (markAll) markAll.addEventListener('click', () => {
+    document.querySelectorAll('.notif-item.unread').forEach(i => i.classList.remove('unread'));
+    document.querySelector('.notif-dot')?.remove();
+    toast('Notificações marcadas como lidas');
+    document.getElementById('notif-panel').classList.remove('open');
+  });
+  // Clicar em notif individual
+  document.querySelectorAll('.notif-item').forEach(item => {
+    item.addEventListener('click', () => {
+      item.classList.remove('unread');
+      item.querySelector('.notif-dot-ind')?.remove();
+      const rem = document.querySelectorAll('.notif-item.unread').length;
+      if (rem === 0) document.querySelector('.notif-dot')?.remove();
+    });
+  });
+});
+
+// ─── TABS ────────────────────────────────────
+function switchTab(el, contentId) {
+  const tabBar = el.closest('.tab-bar');
+  const container = tabBar.parentElement;
+  tabBar.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  container.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  const tc = document.getElementById(contentId);
+  if (tc) tc.classList.add('active');
+}
+
+// ─── FUNIL - ANIMAÇÃO ────────────────────────
+function animateFunnelBars() {
+  document.querySelectorAll('.funnel-bar-fill').forEach(bar => {
+    const w = bar.getAttribute('data-w') || bar.style.width;
+    bar.setAttribute('data-w', w);
+    bar.style.transition = 'none';
+    bar.style.width = '0';
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      bar.style.transition = 'width 1s cubic-bezier(.4,0,.2,1)';
+      bar.style.width = w;
+    }));
+  });
+}
+
+// ─── WHATSAPP ────────────────────────────────
+function openWpp(tel) {
+  const clean = String(tel).replace(/\D/g,'');
+  const num = clean.startsWith('55') ? clean : '55' + clean;
+  window.open('https://wa.me/' + num + '?text=Ol%C3%A1%21+Tudo+bem%3F+Sou+da+CS+Empreendimentos+e+gostaria+de+conversar+sobre+nossos+empreendimentos.', '_blank');
+}
+
+// ─── FORMATAR TELEFONE ───────────────────────
+function fmtTel(t) {
+  const d = String(t).replace(/\D/g,'');
+  if (d.length === 11) return `(${d.slice(0,2)}) ${d[2]} ${d.slice(3,7)}-${d.slice(7)}`;
+  if (d.length === 10) return `(${d.slice(0,2)}) ${d.slice(2,6)}-${d.slice(6)}`;
+  return t;
+}
+
+// ─── RENDER TABELA DE LEADS ──────────────────
+const ETAPA_LABEL = { novo:'Novo Lead', atendimento:'Em Atendimento', qualificado:'Qualificado', aguardando:'Ag. Retorno', visita:'Visita Agendada', visitou:'Visitou', proposta:'Proposta Enviada', negociacao:'Em Negociação', fechado:'Fechado', perdido:'Perdido' };
+const ETAPA_BADGE = { novo:'badge-novo', atendimento:'badge-atendimento', qualificado:'badge-qualificado', aguardando:'badge-aguardando', visita:'badge-visita', visitou:'badge-visita', proposta:'badge-proposta', negociacao:'badge-negociacao', fechado:'badge-fechado', perdido:'badge-perdido' };
+const TEMP_LABEL  = { quente:'🔥 Quente', morno:'🟡 Morno', frio:'🔵 Frio' };
+const TEMP_BADGE  = { quente:'badge-quente', morno:'badge-morno', frio:'badge-frio' };
+const PRIO_CSS    = ['priority-alta','priority-media','priority-baixa'];
+
+function renderLeadsTable(q) {
+  const tbody = document.querySelector('#page-leads tbody');
+  if (!tbody) return;
+  const empF  = document.querySelector('#page-leads select:nth-of-type(1)')?.value || '';
+  const etpF  = document.querySelector('#page-leads select:nth-of-type(2)')?.value || '';
+  const corF  = document.querySelector('#page-leads select:nth-of-type(3)')?.value || '';
+  const tmpF  = document.querySelector('#page-leads select:nth-of-type(4)')?.value || '';
+  const search = (q || '').toLowerCase().trim();
+
+  let list = leadsState.filter(l => {
+    if (empF && !empF.includes('Todos') && !l.emp.includes(empF.split(' ')[0])) return false;
+    if (etpF && !etpF.includes('Todas') && l.etapa !== Object.keys(ETAPA_LABEL).find(k=>ETAPA_LABEL[k]===etpF)) return false;
+    if (corF && !corF.includes('Todos') && l.corretor !== corF) return false;
+    if (tmpF && !tmpF.includes('Temperatura') && l.temp !== tmpF.toLowerCase()) return false;
+    if (search && !l.nome.toLowerCase().includes(search) && !l.emp.toLowerCase().includes(search) && !l.corretor.toLowerCase().includes(search) && !l.origem.toLowerCase().includes(search)) return false;
+    return true;
+  });
+
+  tbody.innerHTML = list.map(l => `
+    <tr style="cursor:pointer;" onclick="openLeadDetail(${l.id})">
+      <td>
+        <div class="flex-center gap-8">
+          <span class="priority ${PRIO_CSS[Math.floor(Math.random()*3)]}"></span>
+          <div><div>${l.nome}</div><div style="font-size:11px;color:var(--cs-text-soft);">${fmtTel(l.tel)}</div></div>
+        </div>
+      </td>
+      <td>${l.emp}</td>
+      <td><span class="badge ${ETAPA_BADGE[l.etapa]||'badge-novo'}">${ETAPA_LABEL[l.etapa]||l.etapa}</span></td>
+      <td><span class="badge ${TEMP_BADGE[l.temp]||'badge-frio'}">${TEMP_LABEL[l.temp]||l.temp}</span></td>
+      <td>${l.corretor}</td>
+      <td><span class="tag-chip">${l.origem}</span></td>
+      <td>${l.data}</td>
+      <td onclick="event.stopPropagation()">
+        <div class="flex-center gap-6">
+          <div class="wpp-btn" onclick="openWpp('${l.tel}')">${WPP_SVG} WhatsApp</div>
+          <button class="btn btn-outline btn-sm" onclick="openLeadDetail(${l.id})">Abrir</button>
+        </div>
+      </td>
+    </tr>`).join('') || `<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--cs-text-soft);">Nenhum lead encontrado</td></tr>`;
+
+  const countEl = document.querySelector('#page-leads .filter-bar + .table-wrap ~ div span');
+  const infoEl = document.querySelector('#page-leads > .card > div:last-child > span');
+  if (infoEl) infoEl.textContent = `Mostrando 1–${list.length} de ${list.length} leads`;
+}
+
+function openLeadDetail(id) {
+  const l = leadsState.find(x=>x.id===id) || leadsState[0];
+  PAGE_META['lead-detail'] = { title: l.nome, sub: `${ETAPA_LABEL[l.etapa]||l.etapa} · ${l.emp}` };
+  // Update detail page
+  const h1 = document.querySelector('#page-lead-detail h1');
+  if (h1) h1.textContent = l.nome;
+  const detailBadges = document.querySelectorAll('#page-lead-detail .lead-detail-header .badge');
+  if (detailBadges[1]) detailBadges[1].textContent = ETAPA_LABEL[l.etapa]||l.etapa;
+  // Phone/email
+  const spans = document.querySelectorAll('#page-lead-detail .lead-detail-header > div > div > div:nth-child(2) span');
+  if (spans[0]) spans[0].textContent = `📱 ${fmtTel(l.tel)}`;
+  nav('lead-detail');
+}
+
+// Filtros leads
+window.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('#page-leads .filter-select').forEach(s =>
+    s.addEventListener('change', () => renderLeadsTable())
+  );
+  // Export
+  const exportBtn = document.querySelector('#page-leads .btn-outline:first-of-type');
+  document.querySelectorAll('#page-leads .btn-outline').forEach(b => {
+    if (b.textContent.includes('Exportar')) b.addEventListener('click', () => toast('📥 Exportando leads para CSV...','info'));
+  });
+});
+
+// ─── RENDER KANBAN ───────────────────────────
+function buildCard(l) {
+  const borderStyle = l.borda ? `border-left:3px solid ${l.borda};` : '';
+  const tempE = { quente:'🔥', morno:'🟡', frio:'🔵' };
+  const tempB = { quente:'badge-quente', morno:'badge-morno', frio:'badge-frio' };
+  const extraHTML = l.extra ? `<div class="lead-meta-row" style="${l.extracor?'color:'+l.extracor+';font-weight:600;':''}">${l.extra}</div>` : '';
+  return `
+    <div class="lead-card"
+         draggable="true"
+         data-id="${l.id}"
+         style="${borderStyle}cursor:grab;"
+         onclick="openLeadDetail(${l.id})">
+      <div class="lead-card-top">
+        <div><div class="lead-name">${l.nome}</div><div class="lead-phone">${fmtTel(l.tel)}</div></div>
+        <span class="badge ${tempB[l.temp]||'badge-frio'}" style="font-size:10px;">${tempE[l.temp]||'🔵'}</span>
+      </div>
+      <div class="lead-card-meta">
+        <div class="lead-meta-row">🏢 ${l.emp}</div>
+        <div class="lead-meta-row">👤 ${l.corretor}</div>
+        <div class="lead-meta-row">📱 ${l.origem} · ${l.data}</div>
+        ${extraHTML}
+      </div>
+      <div class="lead-card-actions" onclick="event.stopPropagation()">
+        <div class="wpp-btn" onclick="openWpp('${l.tel}')">${WPP_SVG} WPP</div>
+        <div class="card-open-btn" onclick="openLeadDetail(${l.id})">Abrir →</div>
+      </div>
+    </div>`;
+}
+
+function renderKanban() {
+  const board = document.getElementById('kanban-board');
+  if (!board) return;
+  const empF = document.querySelector('#page-kanban select:first-of-type')?.value || '';
+  const corF = document.querySelector('#page-kanban select:last-of-type')?.value  || '';
+
+  board.innerHTML = ETAPAS.map(etapa => {
+    let leads = leadsState.filter(l => l.etapa === etapa.id);
+    if (empF && !empF.includes('Todos')) leads = leads.filter(l => l.emp.toLowerCase().includes(empF.toLowerCase().split(' ')[0]));
+    if (corF && !corF.includes('Todos')) leads = leads.filter(l => l.corretor === corF);
+    return `
+      <div class="kanban-col" data-etapa="${etapa.id}">
+        <div class="kanban-col-header">
+          <div class="kanban-col-title">${etapa.label}</div>
+          <span class="kanban-count">${leads.length}</span>
+        </div>
+        <div class="kanban-col-body" data-etapa="${etapa.id}">
+          ${leads.map(l => buildCard(l)).join('')}
+          <div class="kanban-drop-zone">Soltar aqui</div>
+        </div>
+      </div>`;
+  }).join('');
+
+  attachDragListeners();
+}
+
+// ─── DRAG AND DROP ───────────────────────────
+let _dragId = null;
+let _dragFrom = null;
+let _dragEl = null;
+
+function attachDragListeners() {
+  document.querySelectorAll('#kanban-board .lead-card[draggable]').forEach(card => {
+    card.addEventListener('dragstart', handleDragStart);
+    card.addEventListener('dragend',   handleDragEnd);
+  });
+  document.querySelectorAll('#kanban-board .kanban-col-body').forEach(col => {
+    col.addEventListener('dragover',  handleDragOver);
+    col.addEventListener('dragenter', handleDragEnter);
+    col.addEventListener('dragleave', handleDragLeave);
+    col.addEventListener('drop',      handleDrop);
+  });
+}
+
+function handleDragStart(e) {
+  _dragId   = parseInt(this.dataset.id);
+  _dragFrom = this.closest('.kanban-col-body').dataset.etapa;
+  _dragEl   = this;
+  this.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', _dragId);
+}
+function handleDragEnd() {
+  this.classList.remove('dragging');
+  document.querySelectorAll('.kanban-col-body.drag-over').forEach(c => c.classList.remove('drag-over'));
+  _dragEl = null;
+}
+function handleDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+}
+function handleDragEnter(e) {
+  e.preventDefault();
+  if (!this.contains(_dragEl)) this.classList.add('drag-over');
+}
+function handleDragLeave(e) {
+  if (!this.contains(e.relatedTarget)) this.classList.remove('drag-over');
+}
+function handleDrop(e) {
+  e.preventDefault();
+  this.classList.remove('drag-over');
+  const toEtapa = this.dataset.etapa;
+  if (!_dragId || toEtapa === _dragFrom) return;
+  const lead = leadsState.find(l => l.id === _dragId);
+  if (!lead) return;
+  lead.etapa = toEtapa;
+  renderKanban();
+  const label = ETAPAS.find(e => e.id === toEtapa)?.label || toEtapa;
+  toast(`<strong>${lead.nome}</strong> movido para ${label}`);
+  // Atualizar badge do kanban e dashboard
+  const novoCount = leadsState.filter(l=>l.etapa==='novo').length;
+  const badge = document.querySelector('.nav-item[onclick="nav(\'leads\')"] .nav-badge');
+  if (badge) badge.textContent = leadsState.filter(l=>l.etapa!=='fechado'&&l.etapa!=='perdido').length;
+}
+
+// Filtros kanban
+window.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('#page-kanban select').forEach(s =>
+    s.addEventListener('change', renderKanban)
+  );
+});
+
+// ─── CADASTRAR NOVO LEAD ─────────────────────
+function salvarNovoLead() {
+  const inputs = document.querySelectorAll('#modal-novo-lead input');
+  const selects = document.querySelectorAll('#modal-novo-lead select');
+  const nome = inputs[0]?.value.trim();
+  const tel  = inputs[1]?.value.trim().replace(/\D/g,'');
+  if (!nome) { toast('Preencha o nome do lead!','error'); inputs[0]?.focus(); return; }
+  if (!tel)  { toast('Preencha o telefone!','error'); inputs[1]?.focus(); return; }
+  const emp = selects[0]?.value && !selects[0].value.includes('Selecione') ? selects[0].value : 'Aurora Residence';
+  const origemRaw = selects[5]?.value || 'Instagram Ads';
+  const corretorRaw = selects[6]?.value || 'Priscila Santos';
+  const corretor = corretorRaw.includes('automaticamente') ? 'Priscila Santos' : corretorRaw;
+  const newLead = {
+    id: leadsState.length + 100 + Math.floor(Math.random()*100),
+    nome, tel: tel || '11999999999', emp,
+    etapa: 'novo', temp: 'quente', corretor,
+    origem: origemRaw.replace(' Ads','').trim(),
+    data: 'Agora'
+  };
+  leadsState.unshift(newLead);
+  closeModal('modal-novo-lead');
+  toast(`✅ Lead <strong>${nome}</strong> cadastrado!`);
+  // Limpar form
+  inputs.forEach(i => { if(i.type!=='submit' && i.type!=='date' && i.type!=='datetime-local') i.value=''; });
+  document.querySelectorAll('#modal-novo-lead textarea').forEach(t => t.value='');
+  // Refresh páginas abertas
+  if (document.getElementById('page-kanban').classList.contains('active')) renderKanban();
+  if (document.getElementById('page-leads').classList.contains('active'))  renderLeadsTable();
+  const badge = document.querySelector('.nav-item[onclick="nav(\'leads\')"] .nav-badge');
+  if (badge) badge.textContent = leadsState.filter(l=>l.etapa!=='fechado'&&l.etapa!=='perdido').length;
+}
+
+// Registrar interação
+function salvarInteracao() {
+  closeModal('modal-nova-interacao');
+  toast('✅ Interação registrada com sucesso!');
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  // Bind botão salvar lead
+  document.querySelectorAll('#modal-novo-lead .modal-footer .btn-gold').forEach(b =>
+    b.addEventListener('click', salvarNovoLead)
+  );
+  // Bind botão salvar interação
+  document.querySelectorAll('#modal-nova-interacao .modal-footer .btn-gold').forEach(b =>
+    b.addEventListener('click', salvarInteracao)
+  );
+});
+
+// ─── CHECKBOXES / TAREFAS ────────────────────
+window.addEventListener('change', function(e) {
+  if (e.target.type !== 'checkbox') return;
+  const row = e.target.closest('.task-row') || e.target.parentElement?.parentElement;
+  if (!row) return;
+  if (e.target.checked) {
+    row.classList.add('done');
+    toast('✅ Tarefa concluída!');
+  } else {
+    row.classList.remove('done');
+  }
+  // Atualizar contador do badge
+  const allCk = document.querySelectorAll('#page-tarefas input[type=checkbox]');
+  const doneCk = document.querySelectorAll('#page-tarefas input[type=checkbox]:checked');
+  const pendente = allCk.length - doneCk.length;
+  const tBadge = document.querySelector('.nav-item[onclick="nav(\'tarefas\')"] .nav-badge');
+  if (tBadge) tBadge.textContent = pendente > 0 ? pendente : '';
+});
+
+// Wrap task rows with class para estilo
+window.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('#page-tarefas input[type=checkbox]').forEach(cb => {
+    const row = cb.closest('div[style*="display:flex"]') || cb.parentElement;
+    if (row && !row.classList.contains('task-row')) row.classList.add('task-row');
+    if (cb.checked) row?.classList.add('done');
+  });
+  document.querySelectorAll('#tab-tarefas-lead input[type=checkbox]').forEach(cb => {
+    const row = cb.closest('div[style*="display:flex"]') || cb.parentElement;
+    if (row && !row.classList.contains('task-row')) row.classList.add('task-row');
+    if (cb.checked) row?.classList.add('done');
+  });
+});
+
+// ─── BUSCA NA TOPBAR ─────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  const si = document.querySelector('.topbar .search-box input');
+  if (!si) return;
+  si.addEventListener('keydown', function(e) {
+    if (e.key !== 'Enter') return;
+    const q = this.value.trim();
+    if (!q) return;
+    nav('leads');
+    setTimeout(() => renderLeadsTable(q), 60);
+  });
+  si.addEventListener('input', function() {
+    if (!this.value.trim()) {
+      if (document.getElementById('page-leads').classList.contains('active')) renderLeadsTable();
+    }
+  });
+});
+
+// ─── BOTÕES WPP NO HTML ESTÁTICO ─────────────
+window.addEventListener('DOMContentLoaded', () => {
+  // Consertar botões wpp no HTML estático (tabela e outros)
+  document.querySelectorAll('.wpp-btn').forEach(btn => {
+    if (btn.getAttribute('onclick')) return;
+    const row = btn.closest('tr');
+    if (row) {
+      const phoneEl = row.querySelectorAll('td')[0]?.querySelector('div:last-child');
+      if (phoneEl) {
+        const tel = phoneEl.textContent.replace(/\D/g,'');
+        if (tel.length >= 10) { btn.setAttribute('onclick', `openWpp('${tel}')`); return; }
+      }
+    }
+    const card = btn.closest('.lead-card');
+    if (card) {
+      const ph = card.querySelector('.lead-phone');
+      if (ph) {
+        const tel = ph.textContent.replace(/\D/g,'');
+        if (tel.length >= 10) btn.setAttribute('onclick', `openWpp('${tel}')`);
+      }
+    }
+  });
+});
+
+// ─── AÇÕES VARIADAS ──────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  // Empreendimentos — botões "Ver detalhes"
+  document.querySelectorAll('#page-empreendimentos .btn-outline').forEach(b =>
+    b.addEventListener('click', () => toast('🏢 Carregando detalhes...','info'))
+  );
+  // Usuários
+  document.querySelectorAll('#page-usuarios .btn-outline').forEach(b =>
+    b.addEventListener('click', () => toast('✏️ Edição ativada','info'))
+  );
+  const novUsr = document.querySelector('#page-usuarios .btn-gold');
+  if (novUsr) novUsr.addEventListener('click', () => toast('📧 Convite enviado ao novo usuário','info'));
+  // Propostas
+  document.querySelectorAll('#page-propostas .btn-outline').forEach(b => {
+    if (b.textContent.includes('Ver')) b.addEventListener('click', () => toast('📄 Abrindo proposta...','info'));
+  });
+  // Configurações salvar
+  const cfgSave = document.querySelector('#page-configuracoes .btn-primary');
+  if (cfgSave) cfgSave.addEventListener('click', () => toast('✅ Configurações salvas com sucesso!'));
+  const cfgAdd = document.querySelector('#page-configuracoes .btn-outline');
+  if (cfgAdd && cfgAdd.textContent.includes('etapa')) cfgAdd.addEventListener('click', () => toast('➕ Nova etapa adicionada','info'));
+  // Relatórios exportar
+  document.querySelectorAll('#page-relatorios .btn-outline').forEach(b =>
+    b.addEventListener('click', () => toast('📥 Relatório exportado!','info'))
+  );
+  // Agenda agendar
+  document.querySelectorAll('#page-agenda .btn-gold').forEach(b =>
+    b.addEventListener('click', () => openModal('modal-nova-interacao'))
+  );
+  // Lead detail — botões de ação
+  document.querySelectorAll('#page-lead-detail .btn-gold, #page-lead-detail .btn-outline').forEach(b => {
+    if (b.textContent.includes('Agendar')) b.addEventListener('click', () => openModal('modal-nova-interacao'));
+    if (b.textContent.includes('Registrar')) b.addEventListener('click', () => openModal('modal-nova-interacao'));
+    if (b.textContent.includes('Mover')) b.addEventListener('click', () => toast('🔄 Selecione a nova etapa no popup...','info'));
+    if (b.textContent.includes('Proposta')) b.addEventListener('click', () => toast('📄 Gerando proposta...','info'));
+  });
+  // Lead list "Ver todos"
+  document.querySelectorAll('button').forEach(b => {
+    if (b.textContent.trim() === 'Ver todos') b.addEventListener('click', () => nav('leads'));
+    if (b.textContent.includes('Ver agenda')) b.addEventListener('click', () => nav('agenda'));
+  });
+  // Eventos da agenda — clique
+  document.querySelectorAll('.agenda-event').forEach(ev =>
+    ev.addEventListener('click', () => toast('📅 Evento selecionado. Editando...','info'))
+  );
+  // Paginação leads
+  const footerBtns = document.querySelectorAll('#page-leads > .card > div:last-child button');
+  footerBtns.forEach(b => b.addEventListener('click', () => toast('📄 Carregando próxima página...','info')));
+  // Tarefas nova tarefa
+  document.querySelectorAll('#page-tarefas .btn-gold, #tab-tarefas-lead .btn-outline').forEach(b => {
+    b.addEventListener('click', () => toast('📝 Nova tarefa criada!','info'));
+  });
+  // Propostas lead tab gerar
+  document.querySelectorAll('#tab-propostas-lead .btn-gold').forEach(b =>
+    b.addEventListener('click', () => toast('📄 Iniciando geração de proposta...','info'))
+  );
+  // Histórico nova interação
+  document.querySelectorAll('#tab-historico .btn-gold').forEach(b =>
+    b.addEventListener('click', () => openModal('modal-nova-interacao'))
+  );
+});
+
+// ─── INICIALIZAÇÃO ───────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  renderLeadsTable();
+});
+</script>
+</body>
+</html>
